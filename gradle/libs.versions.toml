@@ -3,12 +3,10 @@
 
 [versions]
 kotlin = "2.0.21"
-guava = "33.0.0-jre"
-junit-jupiter = "5.10.2"
+kotlin-telegram-bot = "6.3.0"
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+kotlin-telegram-bot = { module = "io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram", version.ref = "kotlin-telegram-bot" }

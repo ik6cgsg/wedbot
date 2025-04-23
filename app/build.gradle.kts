@@ -1,21 +1,23 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm) 
-    application 
+    alias(libs.plugins.kotlin.jvm)
+    application
 }
 
 repositories {
-    mavenCentral() 
+    mavenCentral()
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5") 
-    testImplementation(libs.junit.jupiter) 
+    implementation(libs.kotlin.telegram.bot)
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    implementation(libs.guava) 
 }
 
 application {
-    mainClass = "wedbot.AppKt" 
+    mainClass = "wedbot.AppKt"
 }
 
 tasks.named<Test>("test") {

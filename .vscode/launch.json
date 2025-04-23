@@ -1,0 +1,11 @@
+{
+    "configurations": [
+        {
+            "type": "kotlin",
+            "request": "launch",
+            "name": "Kotlin Launch",
+            "projectRoot": "${workspaceFolder}",
+            "mainClass": "wedbot.AppKt"
+        }
+    ]
+}
