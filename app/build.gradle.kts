@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     application
@@ -12,12 +14,26 @@ repositories {
 
 dependencies {
     implementation(libs.kotlin.telegram.bot)
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.datetime)
+    implementation(libs.sqlite.jdbc)
+    implementation(libs.slf4j.simple)
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 application {
     mainClass = "wedbot.AppKt"
+}
+
+val localProperties = Properties().apply {
+    file("local.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
+}
+
+tasks.withType<JavaExec> {
+    systemProperty("bot.token", localProperties.getProperty("telegram.bot.token"))  
 }
 
 tasks.named<Test>("test") {

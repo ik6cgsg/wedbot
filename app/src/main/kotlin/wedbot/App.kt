@@ -3,69 +3,76 @@ package wedbot
 import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
 import com.github.kotlintelegrambot.dispatcher.*
-import com.github.kotlintelegrambot.entities.ChatId
 import com.github.kotlintelegrambot.logging.LogLevel
-import com.github.kotlintelegrambot.entities.ReplyKeyboardRemove
-import com.github.kotlintelegrambot.entities.KeyboardReplyMarkup
+import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
-import com.github.kotlintelegrambot.entities.TelegramFile
 import com.github.kotlintelegrambot.entities.TelegramFile.ByFile
 import com.github.kotlintelegrambot.entities.inputmedia.MediaGroup
 import com.github.kotlintelegrambot.entities.inputmedia.InputMediaPhoto
 import java.io.File
-import wedbot.BotCreds
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.transactions.transaction
 
-object BotCreds {
-    val token = "7887769428:AAFfaGPKoN34Y6vzUg_0E4eYsjLAGWytW0o"
-}
-
-//data class App (val t: String = "Test") {}
-
-fun generateUsersButton(): List<List<KeyboardButton>> {
+fun shareContactButton(): List<List<KeyboardButton>> {
     return listOf(
-        listOf(KeyboardButton("Request contact", requestContact = true)),
-        listOf(KeyboardButton("Gimme photo"))
+        listOf(KeyboardButton("Поделиться контактом", requestContact = true)),
     )
 }
 
 fun main() {
-    val idFile = File("./id.txt")
+    val dbUtils = DBUtils()
     val bot = bot {
-        logLevel = LogLevel.All()
-        token = BotCreds.token
+        //logLevel = LogLevel.All()
+        token = System.getProperty("bot.token")
         dispatch {
             command("start") {
-                idFile.writeText(message.chat.id.toString())
-                bot.sendMessage(
-                    chatId = ChatId.fromId(message.chat.id),
-                    text = "Hello, ${message.from?.username} aka ${message.from?.firstName} ${message.from?.lastName}",
-                    replyMarkup = KeyboardReplyMarkup(
-                        keyboard = generateUsersButton(), resizeKeyboard = true
+                val chatId = ChatId.fromId(message.chat.id)
+                val username = message.from!!.username!! // TODO: throw handle null
+                println("username = $username")
+                val rr = dbUtils.getUserByUsername(username)
+                println("db result = $rr")
+                if (rr == null) {
+                    bot.sendMessage(
+                        chatId = chatId,
+                        text = "Кажется, я Вас не узнал, поделитесь пожалуйста контактом!",
+                        replyMarkup = KeyboardReplyMarkup(keyboard = shareContactButton())
                     )
-                )
-            }
-            
-            text("ping") {
-                bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
+                } else {
+                    // TODO: this update failed
+                    dbUtils.updateChatId(rr[Users.id], message.chat.id)
+                    bot.sendMessage(
+                        chatId = chatId,
+                        text = "Здарова, ${rr[Users.realName]} aka ${rr[Users.nikName]}",
+                        replyMarkup = ReplyKeyboardRemove()
+                    )
+                }
             }
 
-            text("Gimme photo") {
-                bot.sendMediaGroup(
+            command("pic") {
+                bot.sendPhoto(
                     chatId = ChatId.fromId(message.chat.id),
-                    mediaGroup = MediaGroup.from(
-                        InputMediaPhoto(
-                            media = TelegramFile.ByFile(File("/Users/ilyakozlov/spbpu/wedbot/app/res/swaga.jpg")),
-                            caption = "Swaga"
-                        )
-                    ),
+                    photo = TelegramFile.ByFile(File("res/swaga.jpg")),
+                    caption = "Swaga"
                 )
+            }
+
+            command("ics") {
+                bot.sendDocument(
+                    chatId = ChatId.fromId(message.chat.id),
+                    document = TelegramFile.ByFile(File("res/wed.ics")),
+                    caption = "Сохраняем в календарь, не стесняемся 😎"
+                )
+            }
+
+            text("ping") {
+                bot.sendMessage(chatId = ChatId.fromId(message.chat.id), text = "Pong")
             }
 
             contact {
                 bot.sendMessage(
                     chatId = ChatId.fromId(message.chat.id),
                     text = "Hello, ${contact.firstName} ${contact.lastName}",
-                    //replyMarkup = ReplyKeyboardRemove()
+                    replyMarkup = ReplyKeyboardRemove()
                 )
             }
 
@@ -75,9 +82,4 @@ fun main() {
         }
     }
     bot.startPolling()
-    val chatId = idFile.readText()
-    if (chatId.isNotBlank()) {
-        println("chatId = $chatId")
-        bot.sendMessage(chatId = ChatId.fromId(chatId.toLong()), text = "ne zhdali ???")
-    }
 }
