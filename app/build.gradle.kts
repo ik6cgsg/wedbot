@@ -33,7 +33,8 @@ val localProperties = Properties().apply {
 }
 
 tasks.withType<JavaExec> {
-    systemProperty("bot.token", localProperties.getProperty("telegram.bot.token"))  
+    systemProperty("bot.token", localProperties.getProperty("telegram.bot.token"))
+    systemProperty("debug", localProperties.getProperty("debug"))
 }
 
 tasks.named<Test>("test") {
