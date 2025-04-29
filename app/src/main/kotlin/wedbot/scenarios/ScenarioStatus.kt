@@ -15,8 +15,8 @@ object UserMessageStatus {
     """
 
     fun statusToMessage(status: Status): String = when(status) {
-        Status.ACCEPT -> "Пойду 💯", 
-        Status.REJECT -> "Не смогу 😭",
+        Status.ACCEPT -> "Пойду 💯"
+        Status.REJECT -> "Не смогу 😭"
         Status.NOT_SURE -> "Пока думаю 🤨"
     }
     fun generateStatus(status: Status) = statusTemplate.format(statusToMessage(status))

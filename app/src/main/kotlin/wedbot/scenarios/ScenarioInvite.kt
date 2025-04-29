@@ -91,7 +91,7 @@ class ScenarioInvite(
     }
 
     private fun handleInvitedUserConfirmed(chatId: Long, username: String?, realName: String?) {
-        val inviteEvent = dbUtils.getActiveInvite(chatId)
+        val inviteEvent = dbUtils.getActiveInviteByChatId(chatId)
         val curChatIdTg = ChatId.fromId(chatId)
         if (inviteEvent != null) {
             bot.sendMessage(curChatIdTg, UserMessageInvite.waitingAdmin)
@@ -116,8 +116,8 @@ class ScenarioInvite(
     }
 
     private fun handleInvitedUserRejected(chatId: Long) {
-        bot.sendMessage(ChatId.fromId(chatId), UserMessageInvite.invitedRejected)
-        dbUtils.getActiveInvite(chatId)?.let {
+        dbUtils.getActiveInviteByChatId(chatId)?.let {
+            bot.sendMessage(ChatId.fromId(chatId), UserMessageInvite.invitedRejected)
             it.userConfirmed = false
             it.isCompleted = true
             dbUtils.updateInviteEvent(it)
@@ -126,7 +126,7 @@ class ScenarioInvite(
     }
 
     private fun handleAdminConfirmedInvite(inviteId: Int) {
-        val inviteEvent = dbUtils.getInviteById(inviteId)
+        val inviteEvent = dbUtils.getActiveInviteById(inviteId)
         if (inviteEvent != null) {
             inviteEvent.adminConfirmed = true
             inviteEvent.isCompleted = true
@@ -151,7 +151,7 @@ class ScenarioInvite(
     }
 
     private fun handleAdminRejectedInvite(inviteId: Int) {
-        val inviteEvent = dbUtils.getInviteById(inviteId)
+        val inviteEvent = dbUtils.getActiveInviteById(inviteId)
         if (inviteEvent != null) {
             inviteEvent.adminConfirmed = false
             inviteEvent.isCompleted = true

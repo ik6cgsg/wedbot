@@ -8,8 +8,8 @@ object InviteEvents: Table() {
     val id = integer("id").autoIncrement()
     val initiatorСhatId = long("init_chat_id")
     val invitedСhatId = long("inv_chat_id")
-    val username = varchar("username", 255).nullable()
-    val realName = varchar("real_name", 255).nullable()
+    val invitedUsername = varchar("inv_username", 255).nullable()
+    val invitedRealName = varchar("inv_real_name", 255).nullable()
     val userConfirmed = bool("user_confirmed").nullable()
     val adminConfirmed = bool("admin_confirmed").nullable()
     val isCompleted = bool("is_completed").default(false)
@@ -32,8 +32,8 @@ fun ResultRow.toInviteEventInfo() = InviteEventInfo(
     this[InviteEvents.id],
     this[InviteEvents.initiatorСhatId],
     this[InviteEvents.invitedСhatId],
-    this[InviteEvents.username],
-    this[InviteEvents.realName],
+    this[InviteEvents.invitedUsername],
+    this[InviteEvents.invitedRealName],
     this[InviteEvents.userConfirmed],
     this[InviteEvents.adminConfirmed],
     this[InviteEvents.isCompleted]

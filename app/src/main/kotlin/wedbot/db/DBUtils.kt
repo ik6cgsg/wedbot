@@ -87,7 +87,7 @@ class DBUtils {
         }
     }
 
-    fun getActiveInvite(invСhatId: Long): InviteEventInfo? {
+    fun getActiveInviteByChatId(invСhatId: Long): InviteEventInfo? {
         return transaction {
             InviteEvents.selectAll()
                 .where { InviteEvents.invitedСhatId eq invСhatId and not(InviteEvents.isCompleted) }
@@ -96,10 +96,10 @@ class DBUtils {
         }
     }
 
-    fun getInviteById(inviteId: Int): InviteEventInfo? {
+    fun getActiveInviteById(inviteId: Int): InviteEventInfo? {
         return transaction {
             InviteEvents.selectAll()
-                .where { InviteEvents.id eq inviteId }
+                .where { InviteEvents.id eq inviteId and not(InviteEvents.isCompleted) }
                 .singleOrNull()
                 ?.toInviteEventInfo()
         }
@@ -110,6 +110,8 @@ class DBUtils {
             InviteEvents.update({ InviteEvents.id eq updatedInfo.id }) {
                 it[InviteEvents.initiatorСhatId] = updatedInfo.initiatorСhatId
                 it[InviteEvents.invitedСhatId] = updatedInfo.invitedСhatId
+                it[InviteEvents.invitedUsername] = updatedInfo.invitedUsername
+                it[InviteEvents.invitedRealName] = updatedInfo.invitedRealName
                 it[InviteEvents.userConfirmed] = updatedInfo.userConfirmed
                 it[InviteEvents.adminConfirmed] = updatedInfo.adminConfirmed
                 it[InviteEvents.isCompleted] = updatedInfo.isCompleted
@@ -119,5 +121,11 @@ class DBUtils {
 }
 
 fun DBUtils.initGen() {
-    
+    transaction {
+        Users.insert {
+            it[username] = "cgsgilich"
+            it[realName] = "илья"
+            it[role] = Role.ADMIN
+        }
+    }
 }

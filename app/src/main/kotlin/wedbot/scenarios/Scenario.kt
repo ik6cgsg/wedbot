@@ -45,4 +45,10 @@ abstract class Scenario(
     fun chatIsAuthorized(chatId: Long): Boolean {
         return getUserIfAuthorized(chatId) != null
     }
+
+    fun test() {
+        val chatId: Long = 11
+        val msgId: Long = 11
+        bot.deleteMessage(ChatId.fromId(chatId), msgId)
+    }
 }
