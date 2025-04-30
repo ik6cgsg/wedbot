@@ -31,10 +31,10 @@ object UserMessageInvite {
 }
 
 object QueryInvite {
-    val inviteUserAccept = "${CommandName.invite}UserAccept"
-    val inviteUserReject = "${CommandName.invite}UserReject"
-    val inviteAdminAccept = "${CommandName.invite}AdminAccept"
-    val inviteAdminReject = "${CommandName.invite}AdminReject"
+    val inviteUserAccept = "${Command.INVITE_GUEST.cmd}UserAccept"
+    val inviteUserReject = "${Command.INVITE_GUEST.cmd}UserReject"
+    val inviteAdminAccept = "${Command.INVITE_GUEST.cmd}AdminAccept"
+    val inviteAdminReject = "${Command.INVITE_GUEST.cmd}AdminReject"
 }
 
 class ScenarioInvite(

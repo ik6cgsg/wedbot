@@ -3,6 +3,7 @@ package wedbot
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.kotlin.datetime.*
+import java.io.File
 
 class DBUtils {
     private val dbPath = "jdbc:sqlite:res/data.db"
@@ -15,8 +16,25 @@ class DBUtils {
             SchemaUtils.create(InviteEvents)
         }
         // TODO: from csv ??
-        initGen()
+        //initGen()
+        executeSqlFile("res/init.sql")
     }
+
+    private fun executeSqlFile(filePath: String) {
+        transaction {
+            val sqlScript = File(filePath).readText()
+            sqlScript.split(";")
+                .map { it.trim() }
+                .filter { it.isNotBlank() }
+                .forEach { query ->
+                    if (query.isNotEmpty()) {
+                        exec(query)
+                    }
+                }
+        }
+    }
+
+    // MARK: Users
 
     fun getUserByUsername(username: String): UserInfo? {
         return transaction {
@@ -77,6 +95,19 @@ class DBUtils {
             }
         }
     }
+
+    fun getUserStatuses(offset: Long, limit: Int): List<UserStatus> {
+        return transaction {
+            Users.select(Users.username, Users.phone, Users.realName, Users.status)
+                .offset(offset)
+                .limit(limit)
+                .map { UserStatus(
+                    it[Users.username], it[Users.phone], it[Users.realName], it[Users.status]
+                ) }
+        }
+    }
+
+    // MARK: Invite Events
 
     fun createInviteEvent(initChatId: Long, invСhatId: Long) {
         transaction {

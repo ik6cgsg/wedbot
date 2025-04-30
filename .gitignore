@@ -3,3 +3,5 @@
 build
 bin
 local.properties
+data.db
+init.sql

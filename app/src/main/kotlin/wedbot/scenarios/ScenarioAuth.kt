@@ -10,7 +10,7 @@ import com.github.kotlintelegrambot.entities.TelegramFile
 object UserMessageAuth {
     const val alreadyChatted = "А мы уже знакомы! Список команд можешь увидеть в меню ниже"
     const val notFound = "Кажется, я тебя не узнал, поделись пожалуйста контактом!"
-    const val shareContact = "Поделиться контактом 🥺"
+    const val shareContact = "Поделиться контактом"
     const val invitationCaption = "Лови открытку от нас 🥺🫶"
 
     private val greetingTemplate = """
@@ -18,13 +18,22 @@ object UserMessageAuth {
     Рады сообщить, что приглашаем Тебя на наш праздник, который будет состоять из двух этапов:
     1. ЗАГС (опционально)
     2. Праздник жизни (musthave)
-    """
+    """.trimIndent()
 
     fun generateGreeting(sex: Sex, name: String?, nik: String?) = greetingTemplate.format(
         if (sex == Sex.FEMALE) "ая" else "ой",
         name ?: "пользователь без тг имени",
         if (nik?.isNotBlank() == true) ", более известный как `$nik` xDD" else ""
     )
+
+    fun generateCommandDescription(): String {
+        val cmdList = Command.entries.map { "* /${it.cmd} -- ${it.description}" }.joinToString(separator = "\n")
+        return """
+        Небольшое руководство: слева в поле ввода сообщения можно увидеть меню нашего бота с классными командами
+
+        $cmdList
+        """.trimIndent()
+    }
 }
 
 class ScenarioAuth(
@@ -35,20 +44,18 @@ class ScenarioAuth(
 
     override fun handleCommand(msg: Message) {
         val chatId = msg.chat.id
+        val chatIdTg = ChatId.fromId(chatId)
         val username = msg.from?.username
         var needPhoneCheck = false
         var userInfo = dbUtils.getUserByChatId(chatId)
-        if (userInfo != null) { // already chatted
-            bot.sendMessage(
-                chatId = ChatId.fromId(chatId),
-                text = UserMessageAuth.alreadyChatted
-            )
+        if (userInfo != null) { // already chatted, send greeting and pic
+            sendGreetingGroup(chatIdTg, userInfo)
         } else if (username == null) { // user got no username (boomer ??)
             needPhoneCheck = true
         } else {
             userInfo = dbUtils.getUserByUsername(username)
             if (userInfo != null) { // first time chatting, send greeting and pic
-                sendGreetingGroup(ChatId.fromId(chatId), userInfo)
+                sendGreetingGroup(chatIdTg, userInfo)
                 userInfo.chatId = chatId
                 dbUtils.updateUser(userInfo)
             } else { // hmmm need phone check
@@ -57,7 +64,7 @@ class ScenarioAuth(
         }
         if (needPhoneCheck) {
             bot.sendMessage(
-                chatId = ChatId.fromId(chatId),
+                chatId = chatIdTg,
                 text = UserMessageAuth.notFound,
                 replyMarkup = KeyboardReplyMarkup(keyboard = shareContactButton(), resizeKeyboard = true)
             )
@@ -87,6 +94,10 @@ class ScenarioAuth(
             chatId = chatId,
             photo = invitationPic,
             caption = UserMessageAuth.invitationCaption
+        )
+        bot.sendMessage(
+            chatId = chatId,
+            text = UserMessageAuth.generateCommandDescription()
         )
     }
 

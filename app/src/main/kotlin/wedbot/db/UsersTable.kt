@@ -34,6 +34,13 @@ data class UserInfo(
     var role: Role = Role.DEFAULT
 )
 
+data class UserStatus(
+    val username: String?,
+    val phone: String?,
+    val realName: String?,
+    val status: Status
+)
+
 fun ResultRow.toUserInfo() = UserInfo(
     this[Users.id],
     this[Users.chatId],

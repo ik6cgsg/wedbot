@@ -24,9 +24,9 @@ object UserMessageStatus {
 }
 
 object QueryStatus {
-    val statusChangeAccept = "${CommandName.changeStatus}ChangeAccept"
-    val statusChangeReject = "${CommandName.changeStatus}ChangeReject"
-    val statusChangeNotSure = "${CommandName.changeStatus}ChangeNotSure"
+    val statusChangeAccept = "${Command.CHANGE_STATUS.cmd}ChangeAccept"
+    val statusChangeReject = "${Command.CHANGE_STATUS.cmd}ChangeReject"
+    val statusChangeNotSure = "${Command.CHANGE_STATUS.cmd}ChangeNotSure"
 }
 
 class ScenarioStatus(

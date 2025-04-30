@@ -5,11 +5,8 @@ import com.github.kotlintelegrambot.dispatcher.*
 import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
-import com.github.kotlintelegrambot.entities.dice.DiceEmoji
 import com.github.kotlintelegrambot.logging.LogLevel
 import com.github.kotlintelegrambot.extensions.filters.Filter
-import kotlin.random.Random
-import wedbot.ScenarioAuth
 
 class WedBot(
     private val dbUtils: DBUtils,
@@ -19,6 +16,8 @@ class WedBot(
     private val scenarioInvite: ScenarioInvite
     private val scenarioStatus: ScenarioStatus
     private val scenarioCalendar: ScenarioCalendar
+    private val scenarioAdmin: ScenarioAdmin
+    private val scenarioEaster: ScenarioEaster
 
     init {
         val debug = System.getProperty("debug", "false").toBoolean()
@@ -31,10 +30,12 @@ class WedBot(
         scenarioInvite = ScenarioInvite(bot, dbUtils)
         scenarioStatus = ScenarioStatus(bot, dbUtils)
         scenarioCalendar = ScenarioCalendar(bot, dbUtils)
+        scenarioAdmin = ScenarioAdmin(bot, dbUtils)
+        scenarioEaster = ScenarioEaster(bot, dbUtils)
     }
 
     fun dispatcher(): (Dispatcher.() -> Unit) = {
-        command(CommandName.start) {
+        command(Command.START.cmd) {
             val args = message.text?.split(" ")
             if (args?.size == 2) {
                 scenarioInvite.handleInvitedUserStart(message.chat.id, args[1])
@@ -42,34 +43,36 @@ class WedBot(
                 scenarioAuth.handleCommand(message)
             }
         }
-        command(CommandName.invite) {
+        command(Command.INVITE_GUEST.cmd) {
             scenarioInvite.handleCommand(message)
         }
-        command(CommandName.changeStatus) {
+        command(Command.CHANGE_STATUS.cmd) {
             scenarioStatus.handleCommand(message)
         }
-        command(CommandName.saveCalendar) {
+        command(Command.SAVE_CALENDAR.cmd) {
             scenarioCalendar.handleCommand(message)
         }
         contact {
             scenarioAuth.handleContact(message.chat.id, contact.phoneNumber, message.from?.username)
         }
         callbackQuery {
-            if (callbackQuery.data.startsWith(CommandName.changeStatus)) {
+            if (callbackQuery.data.startsWith(Command.CHANGE_STATUS.cmd)) {
                 scenarioStatus.handleQuery(callbackQuery)
-            } else if (callbackQuery.data.startsWith(CommandName.invite)) {
+            } else if (callbackQuery.data.startsWith(Command.INVITE_GUEST.cmd)) {
                 scenarioInvite.handleQuery(callbackQuery)
+            }  else if (callbackQuery.data.startsWith(TextCommandAdmin.prefix)) {
+                scenarioAdmin.handleQuery(callbackQuery)
             }
         }
         message(Filter.Sticker) {
-            bot.sendMessage(ChatId.fromId(message.chat.id), UserMessage.sticker)
+            bot.sendMessage(ChatId.fromId(message.chat.id), UserMessageEaster.sticker)
         }
-        // TODO: easter egg + admin scenarios
-        text("dep") {
-            val cid = ChatId.fromId(message.chat.id)
-            val diceList = listOf(DiceEmoji.Football, DiceEmoji.SlotMachine, DiceEmoji.Bowling, DiceEmoji.Basketball, DiceEmoji.Dartboard, DiceEmoji.Dice)
-            val randomDice = diceList[Random.nextInt(diceList.size)]
-            bot.sendDice(cid, randomDice)
+        text {
+            if (text.startsWith(TextCommandAdmin.prefix)) {
+                scenarioAdmin.handleText(text, message.chat.id)
+            } else {
+                scenarioEaster.handleText(text, message.chat.id)
+            }
         }
         telegramError {
             println(error.getErrorMessage())
