@@ -71,6 +71,14 @@ class DBUtils {
         }
     }
 
+    fun getAllUserChats(): List<Long> {
+        return transaction {
+            Users.select(Users.chatId)
+                .where { Users.chatId.isNotNull() }
+                .map { it[Users.chatId]!! }
+        }
+    }
+
     fun createUser(chatId: Long, username: String?, realName: String?) {
         transaction {
             Users.insert {

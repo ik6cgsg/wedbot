@@ -13,13 +13,15 @@ object UserMessageAdmin {
     Текущие команды:
 
     • `admin\_statuses` – возвращает список пользователей со статусом
-    • \[TBD\] `admin\_ping\_users` – отправляет сообщение всем пользователям
+    • `admin\_ping\_users` – отправляет сообщение всем пользователям
     • \[TBD\] `admin\_remind` – напоминает о событии всем подтвердишим пользователям
     """.trimIndent()
 
     val statusTableHeader = """
     📊 Таблица статусов, стр %d
     """.trimIndent()
+
+    val adminMessage = "⚠️ Сообщение от администрации ⚠️\n\n"
 }
 
 object TextCommandAdmin {
@@ -49,7 +51,7 @@ class ScenarioAdmin(
                 chatToPageID[chatId] = PageAndId(0)
                 sendBatchOfStatuses(chatId)
             } else if (text.startsWith(TextCommandAdmin.adminSendTextToAllUsers)) {
-                TODO()
+                sendTextToAllUsers(text)
             } else if (text.startsWith(TextCommandAdmin.adminRemindAcceptedUsers)) {
                 TODO()
             } else {
@@ -116,12 +118,12 @@ class ScenarioAdmin(
         }
     }
 
-    fun generateStatusesKeyboard() = InlineKeyboardMarkup.create(listOf(listOf(
+    private fun generateStatusesKeyboard() = InlineKeyboardMarkup.create(listOf(listOf(
         InlineKeyboardButton.CallbackData("⬅️ Назад", "${QueryAdmin.prevStatusPage}"),
         InlineKeyboardButton.CallbackData("Вперёд ➡️", "${QueryAdmin.nextStatusPage}")
     )))
 
-    fun drawTextTable(
+    private fun drawTextTable(
         headers: List<String>,
         rows: List<List<String>>,
         columnPadding: Int = 1
@@ -161,5 +163,19 @@ class ScenarioAdmin(
         val leftPadding = padding / 2
         val rightPadding = padding - leftPadding
         return padChar.toString().repeat(leftPadding) + this + padChar.toString().repeat(rightPadding)
+    }
+
+    private fun sendTextToAllUsers(text: String) {
+        val cmdLen = TextCommandAdmin.adminSendTextToAllUsers.length
+        dbUtils.getAllUserChats().forEach {
+            bot.sendMessage(
+                chatId = ChatId.fromId(it),
+                text = UserMessageAdmin.adminMessage + text.substring(cmdLen + 1)
+            )
+        }
+    }
+
+    private fun remindAcceptedUsers() {
+
     }
 }

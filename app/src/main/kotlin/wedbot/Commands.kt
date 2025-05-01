@@ -3,7 +3,7 @@ package wedbot
 enum class Command(val cmd: String, val description: String) {
     START(
         "start",
-        "[Пере]Запустить бота"
+        "Пере/Запустить бота"
     ),
     SAVE_CALENDAR(
         "ics",
@@ -11,7 +11,7 @@ enum class Command(val cmd: String, val description: String) {
     ),
     CHANGE_STATUS(
         "status",
-        "Изменить свой статус посещения"
+        "Изменить статус посещения мероприятия"
     ),
     INVITE_GUEST(
         "invite",

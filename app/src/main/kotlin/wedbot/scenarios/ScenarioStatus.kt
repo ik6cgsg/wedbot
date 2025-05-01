@@ -36,11 +36,12 @@ class ScenarioStatus(
     override fun handleCommand(msg: Message) {
         val chatId = msg.chat.id
         getUserIfAuthorized(chatId)?.let {
-            bot.sendMessage(
+            val tgRes = bot.sendMessage(
                 chatId = ChatId.fromId(chatId),
                 text = UserMessageStatus.generateStatus(it.status),
                 replyMarkup = InlineKeyboardMarkup.create(inlineStatusButtons())
             )
+            queueMessageToRm(chatId, tgRes)
         }
     }
 
@@ -55,13 +56,15 @@ class ScenarioStatus(
     }
 
     private fun handleChangeStatusResult(chatId: Long, newStatus: Status) {
+        val chatIdTg = ChatId.fromId(chatId)
         getUserIfAuthorized(chatId)?.let {
             it.status = newStatus
             dbUtils.updateUser(it)
             bot.sendMessage(
-                chatId = ChatId.fromId(chatId),
+                chatId = chatIdTg,
                 text = UserMessageStatus.generateStatusResult(newStatus)
             )
+            rmLastMessage(chatId)
         }
     }
 

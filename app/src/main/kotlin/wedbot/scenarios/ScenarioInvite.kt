@@ -4,23 +4,28 @@ import com.github.kotlintelegrambot.*
 import com.github.kotlintelegrambot.dispatcher.*
 import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
+import com.github.kotlintelegrambot.entities.ParseMode
 
 object UserMessageInvite {
-    private val initiatorMessageTemplate = "перешли кенту пж эту ссылку - https://t.me/w3dDbot?start=%d"
-    private val inviteMessageTemplate = "пользователь %s (%s) хочет добавить вас, похоже на правду?"
-    private val adminNotificationTemplate = "пользователь %s (%s) инициировал добавление %s (%s), согласовано?"
-    private val initiatorInvitedConfirmedTemplate = "пользователь %s успешно приглашен"
-    private val initiatorInvitedRejectedTemplate = "админы не одобрили добавление %s"
+    private val initiatorMessageTemplate = """
+    Перешли своему гостю указанную ссылку
 
-    const val invitedAuthed = "уже авторизованы"
-    const val initiatorNotAuthed = "к сожалению вас пригласил неавторизованный пользователь"
-    const val waitingAdmin = "ждем подтверждения админов"
-    const val invitedRejected = "вы отказались от приглашения"
-    const val initiatorInvitedRejected = "пользователь отклонил ваше приглашение(("
-    const val invitedAdminConfirmed = "вы успешно зарегестрированы на мероприятие"
-    const val invitedAdminRejected = "админы не одобрили заявку"
-    const val adminConfirmedForAdmins = "заявка успешно одобрена одним из админов"
-    const val adminRejectedForAdmins = "заявка отклонена одним из админов"
+    [инвайт-ссылка](https://t.me/w3dDbot?start=%d)
+    """.trimIndent()
+    private val inviteMessageTemplate = "Пользователь %s (%s) хочет добавить вас, похоже на правду?"
+    private val adminNotificationTemplate = "Пользователь %s (%s) инициировал добавление %s (%s), согласовано?"
+    private val initiatorInvitedConfirmedTemplate = "Пользователь %s успешно приглашен"
+    private val initiatorInvitedRejectedTemplate = "Администрация не одобрила добавление %s"
+
+    const val invitedAuthed = "Ты уже приглашен! Пожалуйста перезапусти бота с помощью /start"
+    const val initiatorNotAuthed = "К сожалению, приглашение невалидно"
+    const val waitingAdmin = "Ждем подтверждения администрации ⏳"
+    const val invitedRejected = "Приглашение отменено"
+    const val initiatorInvitedRejected = "Пользователь отклонил приглашение"
+    const val invitedAdminConfirmed = "Ура! Ты с нами!"
+    const val invitedAdminRejected = "Администрация не одобрила заявку"
+    const val adminConfirmedForAdmins = "Заявка успешно одобрена одним из админов"
+    const val adminRejectedForAdmins = "Заявка отклонена одним из админов"
 
     fun generateLinkMessage(chatId: Long) = initiatorMessageTemplate.format(chatId)
     fun generateInviteMessage(username: String?, name: String?) = inviteMessageTemplate.format(username, name)
@@ -46,7 +51,8 @@ class ScenarioInvite(
         if (chatIsAuthorized(chatId)) {
             bot.sendMessage(
                 chatId = ChatId.fromId(chatId),
-                text = UserMessageInvite.generateLinkMessage(chatId)
+                text = UserMessageInvite.generateLinkMessage(chatId),
+                parseMode = ParseMode.MARKDOWN
             )
         }
     }
@@ -66,6 +72,7 @@ class ScenarioInvite(
         val initiatorChatId = initiatorChatIdStr.toLongOrNull()
         val curChatIdTg = ChatId.fromId(curChatId)
         if (initiatorChatId != null) {
+            // TODO: user is in DB, but no chatID
             val mayBeAuthedUser = dbUtils.getUserByChatId(curChatId)
             if (mayBeAuthedUser != null) {
                 bot.sendMessage(curChatIdTg, UserMessageInvite.invitedAuthed)
@@ -75,7 +82,7 @@ class ScenarioInvite(
                     bot.sendMessage(curChatIdTg, UserMessageInvite.initiatorNotAuthed)
                 } else {
                     dbUtils.createInviteEvent(initiatorChatId, curChatId)
-                    bot.sendMessage(
+                    val tgRes = bot.sendMessage(
                         chatId = curChatIdTg,
                         text = UserMessageInvite.generateInviteMessage(initiator.username, initiator.realName),
                         replyMarkup = InlineKeyboardMarkup.create(listOf(listOf(
@@ -83,6 +90,9 @@ class ScenarioInvite(
                             InlineKeyboardButton.CallbackData("❌", QueryInvite.inviteUserReject)
                         )))
                     )
+                    tgRes.fold(ifSuccess = { msg ->
+                        chatToMsgId[curChatId] = msg.messageId
+                    }, ifError = {})
                 }
             }
         } else {
@@ -94,14 +104,15 @@ class ScenarioInvite(
         val inviteEvent = dbUtils.getActiveInviteByChatId(chatId)
         val curChatIdTg = ChatId.fromId(chatId)
         if (inviteEvent != null) {
-            bot.sendMessage(curChatIdTg, UserMessageInvite.waitingAdmin)
+            rmLastMessage(chatId)
+            queueMessageToRm(chatId, bot.sendMessage(curChatIdTg, UserMessageInvite.waitingAdmin))
             inviteEvent.userConfirmed = true
             inviteEvent.invitedUsername = username
             inviteEvent.invitedRealName = realName
             dbUtils.updateInviteEvent(inviteEvent)
             val initiator = dbUtils.getUserByChatId(inviteEvent.initiatorСhatId)
             dbUtils.getAdminChats().forEach { adminId ->
-                bot.sendMessage(
+                val tgResAdmin = bot.sendMessage(
                     chatId = ChatId.fromId(adminId),
                     text = UserMessageInvite.generateAdminNotification(initiator?.username, initiator?.realName, username, realName),
                     replyMarkup = InlineKeyboardMarkup.create(listOf(listOf(
@@ -109,6 +120,7 @@ class ScenarioInvite(
                         InlineKeyboardButton.CallbackData("❌", "${QueryInvite.inviteAdminReject} ${inviteEvent.id}")
                     )))
                 )
+                queueMessageToRm(adminId, tgResAdmin)
             }
         } else {
             sendInternalError(chatId)
@@ -118,6 +130,7 @@ class ScenarioInvite(
     private fun handleInvitedUserRejected(chatId: Long) {
         dbUtils.getActiveInviteByChatId(chatId)?.let {
             bot.sendMessage(ChatId.fromId(chatId), UserMessageInvite.invitedRejected)
+            rmLastMessage(chatId)
             it.userConfirmed = false
             it.isCompleted = true
             dbUtils.updateInviteEvent(it)
@@ -136,15 +149,18 @@ class ScenarioInvite(
                 chatId = ChatId.fromId(inviteEvent.invitedСhatId),
                 text = UserMessageInvite.invitedAdminConfirmed
             )
+            rmLastMessage(inviteEvent.invitedСhatId)
             bot.sendMessage(
                 chatId = ChatId.fromId(inviteEvent.initiatorСhatId),
                 text = UserMessageInvite.generateInviteConfirmedMessage(inviteEvent.invitedUsername)
             )
-            dbUtils.getAdminChats().forEach { adminId -> 
-                bot.sendMessage(ChatId.fromId(adminId), UserMessageInvite.adminConfirmedForAdmins)
+            dbUtils.getAdminChats().forEach { adminId ->
+                val adminIdTg = ChatId.fromId(adminId)
+                bot.sendMessage(adminIdTg, UserMessageInvite.adminConfirmedForAdmins)
+                rmLastMessage(adminId)
             }
         } else {
-            dbUtils.getAdminChats().forEach { adminId -> 
+            dbUtils.getAdminChats().forEach { adminId ->
                 sendInternalError(adminId)
             }
         }
@@ -160,12 +176,15 @@ class ScenarioInvite(
                 chatId = ChatId.fromId(inviteEvent.invitedСhatId),
                 text = UserMessageInvite.invitedAdminRejected
             )
+            rmLastMessage(inviteEvent.invitedСhatId)
             bot.sendMessage(
                 chatId = ChatId.fromId(inviteEvent.initiatorСhatId),
                 text = UserMessageInvite.generateInviteRejectedMessage(inviteEvent.invitedUsername)
             )
-            dbUtils.getAdminChats().forEach { adminId -> 
-                bot.sendMessage(ChatId.fromId(adminId), UserMessageInvite.adminRejectedForAdmins)
+            dbUtils.getAdminChats().forEach { adminId ->
+                val adminIdTg = ChatId.fromId(adminId)
+                bot.sendMessage(adminIdTg, UserMessageInvite.adminRejectedForAdmins)
+                rmLastMessage(adminId)
             }
         } else {
             dbUtils.getAdminChats().forEach { adminId -> 

@@ -3,6 +3,7 @@ package wedbot
 import com.github.kotlintelegrambot.*
 import com.github.kotlintelegrambot.dispatcher.*
 import com.github.kotlintelegrambot.entities.*
+import com.github.kotlintelegrambot.types.TelegramBotResult
 
 object UserMessageCommon {
     const val internalError = "Упс, что-то пошло не так, попробуй перезапустить бота (/start)"
@@ -12,6 +13,8 @@ abstract class Scenario(
     val bot: Bot,
     val dbUtils: DBUtils
 ) {
+    val chatToMsgId = mutableMapOf<Long, Long>()
+
     open fun handleCommand(msg: Message) {
         sendInternalError(msg.chat.id)
     }
@@ -46,9 +49,16 @@ abstract class Scenario(
         return getUserIfAuthorized(chatId) != null
     }
 
-    fun test() {
-        val chatId: Long = 11
-        val msgId: Long = 11
-        bot.deleteMessage(ChatId.fromId(chatId), msgId)
+    fun queueMessageToRm(chatId: Long, tgRes: TelegramBotResult<Message>) {
+        tgRes.fold(ifSuccess = { msg ->
+            chatToMsgId[chatId] = msg.messageId
+        }, ifError = {})
+    }
+
+    fun rmLastMessage(chatId: Long) {
+        chatToMsgId[chatId]?.let { msgId ->
+            bot.deleteMessage(ChatId.fromId(chatId), msgId)
+            chatToMsgId.remove(chatId)
+        }
     }
 }
