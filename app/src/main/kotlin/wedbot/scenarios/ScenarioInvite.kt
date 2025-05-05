@@ -8,21 +8,21 @@ import com.github.kotlintelegrambot.entities.ParseMode
 
 object UserMessageInvite {
     private val initiatorMessageTemplate = """
-    Перешли своему гостю указанную ссылку
+    Перешли указанную ссылку тому, кого ты желаешь пригласить
 
     [инвайт-ссылка](https://t.me/w3dDbot?start=%d)
     """.trimIndent()
-    private val inviteMessageTemplate = "Пользователь %s (%s) хочет добавить вас, похоже на правду?"
+    private val inviteMessageTemplate = "Пользователь %s (%s) хочет позвать вас на свадьбу Ильи и Анастасии, похоже на правду?"
     private val adminNotificationTemplate = "Пользователь %s (%s) инициировал добавление %s (%s), согласовано?"
     private val initiatorInvitedConfirmedTemplate = "Пользователь %s успешно приглашен"
     private val initiatorInvitedRejectedTemplate = "Администрация не одобрила добавление %s"
 
-    const val invitedAuthed = "Ты уже приглашен! Пожалуйста перезапусти бота с помощью /start"
+    const val invitedAuthed = "Ты уже приглашен! Пожалуйста, перезапусти бота с помощью /start"
     const val initiatorNotAuthed = "К сожалению, приглашение невалидно"
     const val waitingAdmin = "Ждем подтверждения администрации ⏳"
     const val invitedRejected = "Приглашение отменено"
     const val initiatorInvitedRejected = "Пользователь отклонил приглашение"
-    const val invitedAdminConfirmed = "Ура, ты с нами! Пожалуйста перезапусти бота с помощью /start"
+    const val invitedAdminConfirmed = "Ура, ты с нами! Пожалуйста, перезапусти бота с помощью /start"
     const val invitedAdminRejected = "Администрация не одобрила заявку"
     const val adminConfirmedForAdmins = "Заявка успешно одобрена одним из админов"
     const val adminRejectedForAdmins = "Заявка отклонена одним из админов"

@@ -9,7 +9,8 @@ object UserMessageStatus {
     private val statusTemplate = """
     Твой текущий статус:
     > %s
-    На что меняем?
+   
+    На какой хочешь изменить?
     """.trimIndent()
     private val statusResultTemplate = """
     Спасибо\! Статус изменён на:

@@ -1,7 +1,9 @@
 .kotlin/
 .gradle
+.idea
 build
 bin
 local.properties
+gradle.properties
 data.db
 init.sql

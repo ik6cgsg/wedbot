@@ -9,33 +9,42 @@ import com.github.kotlintelegrambot.entities.TelegramFile
 import com.github.kotlintelegrambot.entities.ParseMode
 
 object UserMessageAuth {
-    const val notFound = "Кажется, я тебя не узнал, поделись пожалуйста контактом!"
-    const val notFoundTotal = "Извиняемся, вас нет в нашей базе 😕"
+    const val notFound = "Кажется, я тебя не узнал, поделись, пожалуйста, контактом 🙏"
+    const val notFoundTotal = "Извини, но кажется тебя нет в базе 😕"
     const val shareContact = "Поделиться контактом"
-    const val invitationCaption = "Лови открытку от нас 🥺🫶"
 
     private val greetingTemplate = """
-    *Здравствуй, дорог%s %s*%s\!\!
+    *Здравствуй, дорог%s %s*%s\!
 
-    Рады сообщить, что приглашаем Тебя на наш праздник, который будет состоять из двух этапов:
-    1\. ЗАГС \(опционально\)
-    2\. Праздник жизни \(musthave\)
+    С радостью приглашаем тебя разделить с нами одно очень важное событие 🤍
+
+    Проходить оно будет в два этапа, будем искренне ждать тебя на каждом:
+
+    💍 __Торжественная регистрация__
+          ⁕ прийти следует на *20 минут* пораньше
+          ⁕ займёт не более *одного часа*
+          ⁕ дресс\-кот официальный для впечатляющих фотокарточек
+          ⁕ просьба приходить самостоятельно – без подарков\!
+        
+    💍 __Организованный праздник__
+          ⁕ ориентир – весна *2026* года
+          ⁕ _*пожалуйста, не удаляй*_ чат с ботом для дальнейшей связи
     """.trimIndent()
 
     fun generateGreeting(sex: Sex, name: String?, nik: String?) = greetingTemplate.format(
         if (sex == Sex.FEMALE) "ая" else "ой",
         name ?: "безымянный пользователь",
-        if (nik?.isNotBlank() == true) ", более известный как ||_${nik}_|| xDD" else ""
+        if (nik?.isNotBlank() == true) ", более известный как ||_${nik}_|| 🫰" else ""
     )
 
-    fun generateCommandDescription(): String {
-        val cmdList = Command.entries.map { "• /${it.cmd} – ${it.description}" }.joinToString(separator = "\n")
-        return """
-        Небольшое руководство: слева в поле ввода сообщения можно увидеть меню нашего бота с классными командами
+//     fun generateCommandDescription(): String {
+//         val cmdList = Command.entries.map { "• /${it.cmd} – ${it.description}" }.joinToString(separator = "\n")
+//         return """
+//         Небольшое руководство: слева в поле ввода сообщения можно увидеть меню нашего бота с классными командами
         
-$cmdList
-        """.trimIndent()
-    }
+// $cmdList
+//         """.trimIndent()
+//    }
 }
 
 class ScenarioAuth(
@@ -90,22 +99,24 @@ class ScenarioAuth(
     }
 
     private fun sendGreetingGroup(chatId: ChatId, userInfo: UserInfo) {
-        bot.sendMessage(
-            chatId = chatId,
-            text = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
-            replyMarkup = ReplyKeyboardRemove(),
-            parseMode = ParseMode.MARKDOWN_V2
-        )
+        // bot.sendMessage(
+        //     chatId = chatId,
+        //     text = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
+        //     replyMarkup = ReplyKeyboardRemove(),
+        //     parseMode = ParseMode.MARKDOWN_V2
+        // )
         bot.sendPhoto(
             chatId = chatId,
             photo = invitationPic,
-            caption = UserMessageAuth.invitationCaption,
+            //caption = UserMessageAuth.invitationCaption,
+            caption = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
+            parseMode = ParseMode.MARKDOWN_V2
         )
-        bot.sendMessage(
-            chatId = chatId,
-            text = UserMessageAuth.generateCommandDescription(),
-            parseMode = ParseMode.MARKDOWN
-        )
+        // bot.sendMessage(
+        //     chatId = chatId,
+        //     text = UserMessageAuth.generateCommandDescription(),
+        //     parseMode = ParseMode.MARKDOWN
+        // )
     }
 
     private fun shareContactButton(): List<List<KeyboardButton>> {
