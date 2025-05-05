@@ -6,13 +6,15 @@ import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 
 object UserMessageStatus {
-    private const val statusTemplate = """
-    Твой текущий статус: `%s`
+    private val statusTemplate = """
+    Твой текущий статус:
+    > %s
     На что меняем?
-    """
-    private const val statusResultTemplate = """
-    Спасибо! Статус сменен на: `%s`!
-    """
+    """.trimIndent()
+    private val statusResultTemplate = """
+    Спасибо\! Статус изменён на:
+    > %s
+    """.trimIndent()
 
     fun statusToMessage(status: Status): String = when(status) {
         Status.ACCEPT -> "Пойду 💯"
@@ -39,7 +41,8 @@ class ScenarioStatus(
             val tgRes = bot.sendMessage(
                 chatId = ChatId.fromId(chatId),
                 text = UserMessageStatus.generateStatus(it.status),
-                replyMarkup = InlineKeyboardMarkup.create(inlineStatusButtons())
+                replyMarkup = InlineKeyboardMarkup.create(inlineStatusButtons()),
+                parseMode = ParseMode.MARKDOWN_V2
             )
             queueMessageToRm(chatId, tgRes)
         }
@@ -62,7 +65,8 @@ class ScenarioStatus(
             dbUtils.updateUser(it)
             bot.sendMessage(
                 chatId = chatIdTg,
-                text = UserMessageStatus.generateStatusResult(newStatus)
+                text = UserMessageStatus.generateStatusResult(newStatus),
+                parseMode = ParseMode.MARKDOWN_V2
             )
             rmLastMessage(chatId)
         }

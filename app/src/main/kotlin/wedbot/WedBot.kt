@@ -38,7 +38,7 @@ class WedBot(
         command(Command.START.cmd) {
             val args = message.text?.split(" ")
             if (args?.size == 2) {
-                scenarioInvite.handleInvitedUserStart(message.chat.id, args[1])
+                scenarioInvite.handleInvitedUserStart(message)
             } else {
                 scenarioAuth.handleCommand(message)
             }

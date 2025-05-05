@@ -22,7 +22,7 @@ object UserMessageInvite {
     const val waitingAdmin = "Ждем подтверждения администрации ⏳"
     const val invitedRejected = "Приглашение отменено"
     const val initiatorInvitedRejected = "Пользователь отклонил приглашение"
-    const val invitedAdminConfirmed = "Ура! Ты с нами!"
+    const val invitedAdminConfirmed = "Ура, ты с нами! Пожалуйста перезапусти бота с помощью /start"
     const val invitedAdminRejected = "Администрация не одобрила заявку"
     const val adminConfirmedForAdmins = "Заявка успешно одобрена одним из админов"
     const val adminRejectedForAdmins = "Заявка отклонена одним из админов"
@@ -68,13 +68,15 @@ class ScenarioInvite(
         }
     }
 
-    fun handleInvitedUserStart(curChatId: Long, initiatorChatIdStr: String) {
-        val initiatorChatId = initiatorChatIdStr.toLongOrNull()
+    fun handleInvitedUserStart(msg: Message) {
+        val args = msg.text?.split(" ") ?: return
+        val initiatorChatId = args[1].toLongOrNull()
+        val curChatId = msg.chat.id
         val curChatIdTg = ChatId.fromId(curChatId)
         if (initiatorChatId != null) {
-            // TODO: user is in DB, but no chatID
-            val mayBeAuthedUser = dbUtils.getUserByChatId(curChatId)
-            if (mayBeAuthedUser != null) {
+            if (dbUtils.getUserByChatId(curChatId) != null) {
+                bot.sendMessage(curChatIdTg, UserMessageInvite.invitedAuthed)
+            } else if (msg.from?.username != null && dbUtils.getUserByUsername(msg.from!!.username!!) != null) {
                 bot.sendMessage(curChatIdTg, UserMessageInvite.invitedAuthed)
             } else {
                 var initiator = dbUtils.getUserByChatId(initiatorChatId)
@@ -90,8 +92,8 @@ class ScenarioInvite(
                             InlineKeyboardButton.CallbackData("❌", QueryInvite.inviteUserReject)
                         )))
                     )
-                    tgRes.fold(ifSuccess = { msg ->
-                        chatToMsgId[curChatId] = msg.messageId
+                    tgRes.fold(ifSuccess = { sentMsg ->
+                        chatToMsgId[curChatId] = sentMsg.messageId
                     }, ifError = {})
                 }
             }

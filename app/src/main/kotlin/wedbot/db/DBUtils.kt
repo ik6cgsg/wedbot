@@ -15,22 +15,24 @@ class DBUtils {
             SchemaUtils.create(Users)
             SchemaUtils.create(InviteEvents)
         }
-        // TODO: from csv ??
-        //initGen()
         executeSqlFile("res/init.sql")
     }
 
     private fun executeSqlFile(filePath: String) {
-        transaction {
-            val sqlScript = File(filePath).readText()
-            sqlScript.split(";")
-                .map { it.trim() }
-                .filter { it.isNotBlank() }
-                .forEach { query ->
-                    if (query.isNotEmpty()) {
-                        exec(query)
+        val initFile = File(filePath)
+        if (initFile.exists()) {
+            transaction {
+                initFile
+                    .readText()
+                    .split(";")
+                    .map { it.trim() }
+                    .filter { it.isNotBlank() }
+                    .forEach { query ->
+                        if (query.isNotEmpty()) {
+                            exec(query)
+                        }
                     }
-                }
+            }
         }
     }
 
@@ -155,16 +157,6 @@ class DBUtils {
                 it[InviteEvents.adminConfirmed] = updatedInfo.adminConfirmed
                 it[InviteEvents.isCompleted] = updatedInfo.isCompleted
             }
-        }
-    }
-}
-
-fun DBUtils.initGen() {
-    transaction {
-        Users.insert {
-            it[username] = "cgsgilich"
-            it[realName] = "илья"
-            it[role] = Role.ADMIN
         }
     }
 }

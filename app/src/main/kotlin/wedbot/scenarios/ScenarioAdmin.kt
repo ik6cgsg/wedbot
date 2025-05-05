@@ -86,7 +86,6 @@ class ScenarioAdmin(
         chatToPageID[chatId]?.let { pageId ->
             val page = pageId.page
             val offset = page * limit
-            
             val userStatuses = dbUtils.getUserStatuses(offset.toLong(), limit)
             var rows = mutableListOf<List<String>>()
             userStatuses.forEach {

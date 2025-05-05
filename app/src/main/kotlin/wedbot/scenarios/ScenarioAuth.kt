@@ -96,11 +96,11 @@ class ScenarioAuth(
             replyMarkup = ReplyKeyboardRemove(),
             parseMode = ParseMode.MARKDOWN_V2
         )
-        // bot.sendPhoto(
-        //     chatId = chatId,
-        //     photo = invitationPic,
-        //     caption = UserMessageAuth.invitationCaption,
-        // )
+        bot.sendPhoto(
+            chatId = chatId,
+            photo = invitationPic,
+            caption = UserMessageAuth.invitationCaption,
+        )
         bot.sendMessage(
             chatId = chatId,
             text = UserMessageAuth.generateCommandDescription(),
