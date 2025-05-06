@@ -20,8 +20,9 @@ dependencies {
     implementation(libs.exposed.datetime)
     implementation(libs.sqlite.jdbc)
     implementation(libs.slf4j.simple)
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlin.test.junit5)
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 application {

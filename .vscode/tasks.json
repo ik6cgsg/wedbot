@@ -11,7 +11,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "./gradlew build -x test",
+            "command": "./gradlew build",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

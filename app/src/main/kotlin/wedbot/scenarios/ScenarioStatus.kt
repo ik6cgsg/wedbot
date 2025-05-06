@@ -13,7 +13,7 @@ object UserMessageStatus {
     На какой хочешь изменить?
     """.trimIndent()
     private val statusResultTemplate = """
-    Спасибо\! Статус изменён на:
+    Принято\! Статус изменён на:
     > %s
     """.trimIndent()
 

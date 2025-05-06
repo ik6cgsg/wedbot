@@ -8,13 +8,19 @@ import com.github.kotlintelegrambot.entities.ParseMode
 import kotlin.text.trimMargin
 
 object UserMessageAdmin {
+    const val tbd = "Тo Be Developed"
+    const val pingFormat = """
+    Сообщение не отправлено, ожидаемый формат:
+    
+    `admin\_ping\_users <text\>`
+    """
     val unknownCommand = """
-    А вы точно ||админ||?
+    А ты точно ||админ||?
     Текущие команды:
 
-    • `admin\_statuses` – возвращает список пользователей со статусом
-    • `admin\_ping\_users` – отправляет сообщение всем пользователям
-    • \[TBD\] `admin\_remind` – напоминает о событии всем подтвердишим пользователям
+    ⁕ `admin\_statuses` – возвращает список пользователей со статусом
+    ⁕ `admin\_ping\_users <text\>` – отправляет _text_ всем пользователям
+    ⁕ \[TBD\] `admin\_remind` – напоминает о событии всем подтвердишим пользователям
     """.trimIndent()
 
     val statusTableHeader = """
@@ -51,14 +57,15 @@ class ScenarioAdmin(
                 chatToPageID[chatId] = PageAndId(0)
                 sendBatchOfStatuses(chatId)
             } else if (text.startsWith(TextCommandAdmin.adminSendTextToAllUsers)) {
-                sendTextToAllUsers(text)
+                sendTextToAllUsers(text, chatId)
             } else if (text.startsWith(TextCommandAdmin.adminRemindAcceptedUsers)) {
-                TODO()
+                bot.sendMessage(ChatId.fromId(chatId), UserMessageAdmin.tbd)
             } else {
                 bot.sendMessage(
                     chatId = ChatId.fromId(chatId),
                     text = UserMessageAdmin.unknownCommand,
-                    parseMode = ParseMode.MARKDOWN_V2)
+                    parseMode = ParseMode.MARKDOWN_V2
+                )
             }
         }
     }
@@ -164,13 +171,18 @@ class ScenarioAdmin(
         return padChar.toString().repeat(leftPadding) + this + padChar.toString().repeat(rightPadding)
     }
 
-    private fun sendTextToAllUsers(text: String) {
+    private fun sendTextToAllUsers(text: String, chatId: Long) {
         val cmdLen = TextCommandAdmin.adminSendTextToAllUsers.length
-        dbUtils.getAllUserChats().forEach {
-            bot.sendMessage(
-                chatId = ChatId.fromId(it),
-                text = UserMessageAdmin.adminMessage + text.substring(cmdLen + 1)
-            )
+        if (text.length > cmdLen + 1) {
+            dbUtils.getAllUserChats().forEach {
+                bot.sendMessage(
+                    chatId = ChatId.fromId(it),
+                    text = UserMessageAdmin.adminMessage + text.substring(cmdLen + 1)
+                )
+            }
+        } else {
+            bot.sendMessage(ChatId.fromId(chatId), UserMessageAdmin.pingFormat,
+                parseMode = ParseMode.MARKDOWN_V2)
         }
     }
 
