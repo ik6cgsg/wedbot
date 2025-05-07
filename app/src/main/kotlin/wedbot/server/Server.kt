@@ -28,7 +28,7 @@ class Server(
             keyStore = CertificateUtils.keyStore,
             keyAlias = CertificateUtils.keyAlias,
             keyStorePassword = { CertificateUtils.keyStorePassword },
-            privateKeyPassword = { CertificateUtils.privateKeyPassword }
+            privateKeyPassword = { CertificateUtils.keyStorePassword }
         ) {
             port = 8443
             //host = "vm4094833.stark-industries.solutions"

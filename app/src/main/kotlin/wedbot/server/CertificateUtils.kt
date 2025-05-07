@@ -6,7 +6,6 @@ import java.security.KeyStore
 
 object CertificateUtils {
     private const val keyStorePath = "res/keystore.jks"
-    val privateKeyPassword = "".toCharArray()
     val keyStorePassword = SystemProperties.keystorePassword.toCharArray()
     const val keyAlias = "wedbot"
     const val certPath = "res/pub.pem"
@@ -32,10 +31,7 @@ object CertificateUtils {
     val keyStore: KeyStore
         get() = KeyStore.getInstance("JKS").apply {
             FileInputStream(keyStoreFile).use {
-                load(it, privateKeyPassword)
-            }
-            requireNotNull(getKey(keyAlias, privateKeyPassword) == null) {
-                "The specified key $keyAlias doesn't exist in the key store $keyStoreFile}"
+                load(it, keyStorePassword)
             }
         }
 }
