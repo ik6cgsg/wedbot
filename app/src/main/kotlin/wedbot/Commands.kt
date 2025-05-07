@@ -18,3 +18,9 @@ enum class Command(val cmd: String, val description: String) {
         "Пригласить своего +1"
     )
 }
+
+object SystemProperties {
+    val botToken: String = System.getProperty("bot.token")
+    val botHost: String = System.getProperty("bot.host")
+    val keystorePassword: String = System.getProperty("keystore.pswd")
+}

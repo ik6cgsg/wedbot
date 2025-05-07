@@ -7,3 +7,6 @@ local.properties
 gradle.properties
 data.db
 init.sql
+*.key
+*.jks
+*.p12

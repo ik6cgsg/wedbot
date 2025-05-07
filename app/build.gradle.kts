@@ -14,6 +14,9 @@ repositories {
 
 dependencies {
     implementation(libs.kotlin.telegram.bot)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.network.tls.certificates)
     implementation(libs.exposed.core)
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
@@ -34,7 +37,9 @@ val localProperties = Properties().apply {
 }
 
 tasks.withType<JavaExec> {
-    systemProperty("bot.token", localProperties.getProperty("telegram.bot.token"))
+    systemProperty("bot.token", localProperties.getProperty("bot.token"))
+    systemProperty("bot.host", localProperties.getProperty("bot.host"))
+    systemProperty("keystore.pswd", localProperties.getProperty("keystore.pswd"))
     systemProperty("debug", localProperties.getProperty("debug"))
 }
 

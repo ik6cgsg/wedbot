@@ -23,7 +23,13 @@ class WedBot(
         val debug = System.getProperty("debug", "false").toBoolean()
         bot = bot {
             if (debug) logLevel = LogLevel.All()
-            token = System.getProperty("bot.token")
+            token = SystemProperties.botToken
+            webhook {
+                url = "${SystemProperties.botHost}/${SystemProperties.botToken}"
+                certificate = TelegramFile.ByFile(CertificateUtils.certPathFile)
+                maxConnections = 20
+                allowedUpdates = listOf("message", "callback_query")
+            }
             dispatch(dispatcher())
         }
         scenarioAuth = ScenarioAuth(bot, dbUtils)
@@ -81,6 +87,11 @@ class WedBot(
 
     fun start() {
         // TODO: webhooking?
-        bot.startPolling()
+        //bot.startPolling()
+        bot.startWebhook()
+    }
+
+    suspend fun process(message: String) {
+        bot.processUpdate(message)
     }
 }
