@@ -3,7 +3,7 @@ package wedbot
 fun main() {
     val dbUtils = DBUtils()
     val wedbot = WedBot(dbUtils)
-    wedbot.start()
+    //wedbot.start()
     val server = Server(wedbot)
     server.start()
 }

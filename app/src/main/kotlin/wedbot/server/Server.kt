@@ -8,6 +8,7 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.http.HttpStatusCode
 import com.github.kotlintelegrambot.Bot
+import io.ktor.server.plugins.calllogging.*
 
 class Server(
     val bot: WedBot
@@ -34,6 +35,7 @@ class Server(
     }
 
     private fun Application.module() {
+        install(CallLogging)
         routing {
             post("/${SystemProperties.botToken}") {
                 val response = call.receiveText()
