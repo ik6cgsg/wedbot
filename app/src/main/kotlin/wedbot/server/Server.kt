@@ -21,9 +21,6 @@ class Server(
     }
 
     private fun ApplicationEngine.Configuration.configuration() {
-        // connector {
-        //     port = 8080
-        // }
         sslConnector(
             keyStore = CertificateUtils.keyStore,
             keyAlias = CertificateUtils.keyAlias,
@@ -31,7 +28,7 @@ class Server(
             privateKeyPassword = { CertificateUtils.keyStorePassword }
         ) {
             port = 8443
-            //host = "vm4094833.stark-industries.solutions"
+            host = SystemProperties.botHost
             keyStorePath = CertificateUtils.keyStoreFile.absoluteFile
         }
     }

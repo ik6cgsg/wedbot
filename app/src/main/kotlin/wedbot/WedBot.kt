@@ -25,7 +25,7 @@ class WedBot(
             if (debug) logLevel = LogLevel.All()
             token = SystemProperties.botToken
             webhook {
-                url = "${SystemProperties.botHost}/${SystemProperties.botToken}"
+                url = "https://${SystemProperties.botHost}:8443/${SystemProperties.botToken}"
                 certificate = TelegramFile.ByFile(CertificateUtils.certPathFile)
                 maxConnections = 20
                 allowedUpdates = listOf("message", "callback_query")
