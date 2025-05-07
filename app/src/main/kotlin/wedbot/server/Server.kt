@@ -28,7 +28,7 @@ class Server(
             keyStorePassword = { CertificateUtils.keyStorePassword },
             privateKeyPassword = { CertificateUtils.keyStorePassword }
         ) {
-            port = 8443
+            port = SystemProperties.botPort
             host = SystemProperties.botHost
             keyStorePath = CertificateUtils.keyStoreFile.absoluteFile
         }

@@ -40,6 +40,8 @@ val localProperties = Properties().apply {
 tasks.withType<JavaExec> {
     systemProperty("bot.token", localProperties.getProperty("bot.token"))
     systemProperty("bot.host", localProperties.getProperty("bot.host"))
+    systemProperty("bot.port", localProperties.getProperty("bot.port"))
+    systemProperty("bot.webhook", localProperties.getProperty("bot.webhook"))
     systemProperty("keystore.pswd", localProperties.getProperty("keystore.pswd"))
     systemProperty("debug", localProperties.getProperty("debug"))
 }

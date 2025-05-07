@@ -8,5 +8,6 @@ gradle.properties
 data.db
 init.sql
 *.key
+*.pem
 *.jks
 *.p12

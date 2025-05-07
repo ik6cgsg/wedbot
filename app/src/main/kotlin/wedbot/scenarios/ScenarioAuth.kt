@@ -14,7 +14,7 @@ object UserMessageAuth {
     const val shareContact = "Поделиться контактом"
 
     private val greetingTemplate = """
-    *Здравствуй, дорог%s %s*%s\!
+    *Здравствуй, %s %s*%s\!
 
     С радостью приглашаем тебя разделить с нами одно очень важное событие 🤍
 
@@ -32,19 +32,27 @@ object UserMessageAuth {
     """.trimIndent()
 
     fun generateGreeting(sex: Sex, name: String?, nik: String?) = greetingTemplate.format(
-        if (sex == Sex.FEMALE) "ая" else "ой",
-        name ?: "безымянный пользователь",
-        if (nik?.isNotBlank() == true) ", более известный как ||_${nik}_|| 🫰" else ""
+        when (sex) {
+            Sex.FEMALE -> "дорогая"
+            Sex.MALE -> "дорогой"
+            Sex.NE_BYLO -> ""
+        },
+        name ?: "гость",
+        if (nik?.isNotBlank() == true) {
+            ", более известн${if (sex == Sex.FEMALE) "ая" else "ый"} как ||_${nik}_|| 🫰" 
+        } else ""
     )
 
-//     fun generateCommandDescription(): String {
-//         val cmdList = Command.entries.map { "• /${it.cmd} – ${it.description}" }.joinToString(separator = "\n")
-//         return """
-//         Небольшое руководство: слева в поле ввода сообщения можно увидеть меню нашего бота с классными командами
-        
-// $cmdList
-//         """.trimIndent()
-//    }
+    fun generateCommandDescription(): String {
+        val cmdList = Command.entries.map { "⁕ /${it.cmd} – ${it.description}" }.joinToString(separator = "\n")
+        val info = """
+        Cлева от поля ввода можно увидеть меню нашего бота.
+        Не забудь им воспользоваться! Вот небольшое руководство:
+
+        $cmdList
+        """.trimIndent()
+        return info
+   }
 }
 
 class ScenarioAuth(
@@ -108,15 +116,16 @@ class ScenarioAuth(
         bot.sendPhoto(
             chatId = chatId,
             photo = invitationPic,
-            //caption = UserMessageAuth.invitationCaption,
             caption = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
             parseMode = ParseMode.MARKDOWN_V2
         )
-        // bot.sendMessage(
-        //     chatId = chatId,
-        //     text = UserMessageAuth.generateCommandDescription(),
-        //     parseMode = ParseMode.MARKDOWN
-        // )
+        bot.sendChatAction(chatId, ChatAction.TYPING)
+        Thread.sleep(1000)
+        bot.sendMessage(
+            chatId = chatId,
+            text = UserMessageAuth.generateCommandDescription(),
+            parseMode = ParseMode.MARKDOWN
+        )
     }
 
     private fun shareContactButton(): List<List<KeyboardButton>> {

@@ -20,11 +20,10 @@ class WedBot(
     private val scenarioEaster: ScenarioEaster
 
     init {
-        val debug = System.getProperty("debug", "false").toBoolean()
         bot = bot {
-            if (debug) logLevel = LogLevel.All()
+            if (SystemProperties.loggerOn) logLevel = LogLevel.All()
             token = SystemProperties.botToken
-            webhook {
+            if (SystemProperties.useWebhook) webhook {
                 url = "https://${SystemProperties.botHost}:8443/${SystemProperties.botToken}"
                 certificate = TelegramFile.ByFile(CertificateUtils.certPathFile)
                 maxConnections = 20
@@ -86,9 +85,12 @@ class WedBot(
     }
 
     fun start() {
-        // TODO: webhooking?
-        //bot.startPolling()
-        bot.startWebhook()
+        if (SystemProperties.useWebhook) {
+            bot.startWebhook()
+        } else {
+            bot.deleteWebhook(true)
+            bot.startPolling()
+        }
     }
 
     suspend fun process(message: String) {
