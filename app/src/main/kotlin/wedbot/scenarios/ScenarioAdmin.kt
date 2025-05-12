@@ -20,7 +20,6 @@ object UserMessageAdmin {
 
     ⁕ `admin\_statuses` – возвращает список пользователей со статусом
     ⁕ `admin\_ping\_users <text\>` – отправляет _text_ всем пользователям
-    ⁕ \[TBD\] `admin\_remind` – напоминает о событии всем подтвердишим пользователям
     """.trimIndent()
 
     val statusTableHeader = """
@@ -34,7 +33,6 @@ object TextCommandAdmin {
     val prefix = "admin"
     val adminUserStatuses = "${prefix}_statuses"
     val adminSendTextToAllUsers = "${prefix}_ping_users"
-    val adminRemindAcceptedUsers = "${prefix}_remind"
 }
 
 object QueryAdmin {
@@ -58,8 +56,6 @@ class ScenarioAdmin(
                 sendBatchOfStatuses(chatId)
             } else if (text.startsWith(TextCommandAdmin.adminSendTextToAllUsers)) {
                 sendTextToAllUsers(text, chatId)
-            } else if (text.startsWith(TextCommandAdmin.adminRemindAcceptedUsers)) {
-                bot.sendMessage(ChatId.fromId(chatId), UserMessageAdmin.tbd)
             } else {
                 bot.sendMessage(
                     chatId = ChatId.fromId(chatId),

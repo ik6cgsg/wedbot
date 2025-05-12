@@ -22,8 +22,8 @@ enum class Command(val cmd: String, val description: String) {
 object SystemProperties {
     val botToken: String = System.getProperty("bot.token")
     val botHost: String = System.getProperty("bot.host")
-    val botPort: Int = System.getProperty("bot.port", "80").toInt()
+    val botPort: Int = System.getProperty("bot.port").toIntOrNull() ?: 80
     val keystorePassword: String = System.getProperty("keystore.pswd")
-    val useWebhook: Boolean = System.getProperty("bot.webhook", "false").toBoolean()
-    val loggerOn: Boolean = System.getProperty("debug", "false").toBoolean()
+    val useWebhook: Boolean = System.getProperty("bot.webhook").toBoolean()
+    val loggerOn: Boolean = System.getProperty("debug").toBoolean()
 }

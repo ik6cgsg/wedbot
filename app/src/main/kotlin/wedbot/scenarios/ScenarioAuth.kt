@@ -31,6 +31,13 @@ object UserMessageAuth {
           ⁕ _*пожалуйста, не удаляй*_ чат с ботом для дальнейшей связи
     """.trimIndent()
 
+    private val descriptionTemplate = """
+    Cлева от поля ввода можно увидеть меню нашего бота.
+    Не забудь им воспользоваться! Вот небольшое руководство:
+
+    %s
+    """.trimIndent()
+
     fun generateGreeting(sex: Sex, name: String?, nik: String?) = greetingTemplate.format(
         when (sex) {
             Sex.FEMALE -> "дорогая"
@@ -45,13 +52,7 @@ object UserMessageAuth {
 
     fun generateCommandDescription(): String {
         val cmdList = Command.entries.map { "⁕ /${it.cmd} – ${it.description}" }.joinToString(separator = "\n")
-        val info = """
-        Cлева от поля ввода можно увидеть меню нашего бота.
-        Не забудь им воспользоваться! Вот небольшое руководство:
-
-        $cmdList
-        """.trimIndent()
-        return info
+        return descriptionTemplate.format(cmdList)
    }
 }
 
@@ -106,17 +107,17 @@ class ScenarioAuth(
         }
     }
 
-    private fun sendGreetingGroup(chatId: ChatId, userInfo: UserInfo) {
-        // bot.sendMessage(
-        //     chatId = chatId,
-        //     text = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
-        //     replyMarkup = ReplyKeyboardRemove(),
-        //     parseMode = ParseMode.MARKDOWN_V2
-        // )
-        bot.sendPhoto(
+    private fun sendGreetingGroup(chatId: ChatId, userInfo: UserInfo) {       
+         bot.sendPhoto(
             chatId = chatId,
             photo = invitationPic,
-            caption = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
+            replyMarkup = ReplyKeyboardRemove()
+        )
+        bot.sendChatAction(chatId, ChatAction.TYPING)
+        Thread.sleep(1000)
+        bot.sendMessage(
+            chatId = chatId,
+            text = UserMessageAuth.generateGreeting(userInfo.sex, userInfo.realName, userInfo.nikName),
             parseMode = ParseMode.MARKDOWN_V2
         )
         bot.sendChatAction(chatId, ChatAction.TYPING)

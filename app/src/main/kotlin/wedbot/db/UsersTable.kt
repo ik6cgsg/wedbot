@@ -12,7 +12,7 @@ object Users: Table() {
     val id = integer("id").autoIncrement()
     val chatId = long("chat_id").uniqueIndex().nullable()
     val username = varchar("username", 255).uniqueIndex().nullable()
-    val phone = varchar("phone", 11).uniqueIndex().nullable()
+    val phone = varchar("phone", 13).uniqueIndex().nullable()
     val realName = varchar("real_name", 255).nullable()
     val nikName = varchar("nik_name", 255).nullable()
     val sex = enumerationByName("sex", 8, Sex::class).default(Sex.NE_BYLO)
