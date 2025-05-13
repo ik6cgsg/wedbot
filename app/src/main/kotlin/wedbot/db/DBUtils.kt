@@ -108,11 +108,11 @@ class DBUtils {
 
     fun getUserStatuses(offset: Long, limit: Int): List<UserStatus> {
         return transaction {
-            Users.select(Users.username, Users.phone, Users.realName, Users.status)
+            Users.select(Users.chatId, Users.username, Users.phone, Users.realName, Users.status)
                 .offset(offset)
                 .limit(limit)
                 .map { UserStatus(
-                    it[Users.username], it[Users.phone], it[Users.realName], it[Users.status]
+                    it[Users.chatId], it[Users.username], it[Users.phone], it[Users.realName], it[Users.status]
                 ) }
         }
     }
@@ -143,6 +143,17 @@ class DBUtils {
                 .where { InviteEvents.id eq inviteId and not(InviteEvents.isCompleted) }
                 .singleOrNull()
                 ?.toInviteEventInfo()
+        }
+    }
+
+    fun getInviteStatuses(offset: Long, limit: Int): List<InviteStatus> {
+        return transaction {
+            InviteEvents.select(InviteEvents.id, InviteEvents.initiatorСhatId, InviteEvents.invitedСhatId, InviteEvents.userConfirmed, InviteEvents.adminConfirmed, InviteEvents.isCompleted)
+                .offset(offset)
+                .limit(limit)
+                .map { InviteStatus(
+                    it[InviteEvents.id], it[InviteEvents.initiatorСhatId], it[InviteEvents.invitedСhatId], it[InviteEvents.userConfirmed], it[InviteEvents.adminConfirmed], it[InviteEvents.isCompleted]
+                ) }
         }
     }
 

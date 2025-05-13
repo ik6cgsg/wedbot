@@ -19,6 +19,7 @@ object UserMessageAdmin {
     Текущие команды:
 
     ⁕ `admin\_statuses` – возвращает список пользователей со статусом
+    ⁕ `admin\_invites` – возвращает список заявок на ивайт
     ⁕ `admin\_ping\_users <text\>` – отправляет _text_ всем пользователям
     """.trimIndent()
 
@@ -32,6 +33,7 @@ object UserMessageAdmin {
 object TextCommandAdmin {
     val prefix = "admin"
     val adminUserStatuses = "${prefix}_statuses"
+    val adminInvites = "${prefix}_invites"
     val adminSendTextToAllUsers = "${prefix}_ping_users"
 }
 
@@ -44,16 +46,25 @@ class ScenarioAdmin(
     bot: Bot,
     dbUtils: DBUtils
 ): Scenario(bot, dbUtils) {
-    data class PageAndId(var page: Int, var id: Long? = null)
+    data class MetaInfo(var page: Int, val batchFunc: (Long, Int, Long?) -> Long?, var msgId: Long? = null) {
+        fun batch(chatId: Long) {
+            msgId = batchFunc(chatId, page, msgId)
+        }
+    }
 
     val limit = 10
-    private val chatToPageID = mutableMapOf<Long, PageAndId>()
+    private val chatToMeta = mutableMapOf<Long, MetaInfo>()
 
     override fun handleText(text: String, chatId: Long) {
         if (dbUtils.getUserByChatId(chatId)?.role == Role.ADMIN) {
             if (text.startsWith(TextCommandAdmin.adminUserStatuses)) {
-                chatToPageID[chatId] = PageAndId(0)
-                sendBatchOfStatuses(chatId)
+                chatToMeta[chatId]?.msgId?.let { msgId -> bot.deleteMessage(ChatId.fromId(chatId), msgId) }
+                chatToMeta[chatId] = MetaInfo(0, ::sendBatchOfStatuses)
+                chatToMeta[chatId]?.batch(chatId)
+            } else if (text.startsWith(TextCommandAdmin.adminInvites)) {
+                chatToMeta[chatId]?.msgId?.let { msgId -> bot.deleteMessage(ChatId.fromId(chatId), msgId) }
+                chatToMeta[chatId] = MetaInfo(0, ::sendBatchOfInvites)
+                chatToMeta[chatId]?.batch(chatId)
             } else if (text.startsWith(TextCommandAdmin.adminSendTextToAllUsers)) {
                 sendTextToAllUsers(text, chatId)
             } else {
@@ -70,54 +81,68 @@ class ScenarioAdmin(
         val chatId = query.message?.chat?.id ?: return
         val args = query.data.split(" ")
         when (args[0]) {
-            QueryAdmin.nextStatusPage -> {
-                chatToPageID[chatId]?.let { it.page += 1 }
-                sendBatchOfStatuses(chatId)
+            QueryAdmin.nextStatusPage -> chatToMeta[chatId]?.let { 
+                it.page += 1
+                it.batch(chatId)
             }
-            QueryAdmin.prevStatusPage -> {
-                chatToPageID[chatId]?.let {
-                    if (it.page > 0) {
-                        it.page -= 1
-                    }
+            QueryAdmin.prevStatusPage -> chatToMeta[chatId]?.let {
+                if (it.page > 0) {
+                    it.page -= 1
                 }
-                sendBatchOfStatuses(chatId)
+                it.batch(chatId)
             }
         }
     }
 
-    private fun sendBatchOfStatuses(chatId: Long) {
-        chatToPageID[chatId]?.let { pageId ->
-            val page = pageId.page
-            val offset = page * limit
-            val userStatuses = dbUtils.getUserStatuses(offset.toLong(), limit)
-            var rows = mutableListOf<List<String>>()
-            userStatuses.forEach {
-                rows.add(listOf<String>(it.username ?: "null", it.phone ?: "null", it.realName ?: "null", it.status.name))
-            }
-            var tableMsg = UserMessageAdmin.statusTableHeader.format(page) + "\n" + drawTextTable(
-                headers = listOf("username", "phone", "realName", "status"), rows
-            )
-            tableMsg = "```\n$tableMsg\n```"
-            if (pageId.id == null) {
-                val tgRes = bot.sendMessage(
-                    chatId = ChatId.fromId(chatId),
-                    text = tableMsg,
-                    replyMarkup = generateStatusesKeyboard(),
-                    parseMode = ParseMode.MARKDOWN
-                )
-                tgRes.fold(ifSuccess = { msg ->
-                    pageId.id = msg.messageId
-                }, ifError = {})
-            } else {
-                bot.editMessageText(
-                    chatId = ChatId.fromId(chatId),
-                    messageId = pageId.id,
-                    text = tableMsg,
-                    replyMarkup = generateStatusesKeyboard(),
-                    parseMode = ParseMode.MARKDOWN
-                )
-            }
+    private fun sendBatchOfStatuses(chatId: Long, page: Int, msgId: Long?): Long? {
+        val offset = page * limit
+        val userStatuses = dbUtils.getUserStatuses(offset.toLong(), limit)
+        var rows = mutableListOf<List<String>>()
+        userStatuses.forEach {
+            rows.add(listOf<String>("${it.chatId}", "${it.username}", "${it.phone}", "${it.realName}", it.status.name))
         }
+        var tableMsg = UserMessageAdmin.statusTableHeader.format(page) + "\n" + drawTextTable(
+            headers = listOf("chatId", "username", "phone", "realName", "status"), rows
+        )
+        tableMsg = "```\n$tableMsg\n```"
+        return sendTableMessage(chatId, msgId, tableMsg)
+    }
+
+    private fun sendBatchOfInvites(chatId: Long, page: Int, msgId: Long?): Long? {
+        val offset = page * limit
+        val inviteStatuses = dbUtils.getInviteStatuses(offset.toLong(), limit)
+        var rows = mutableListOf<List<String>>()
+        inviteStatuses.forEach {
+            rows.add(listOf<String>("${it.id}", "${it.initiatorСhatId}", "${it.invitedСhatId}", "${it.userConfirmed}", "${it.adminConfirmed}", "${it.isCompleted}"))
+        }
+        var tableMsg = UserMessageAdmin.statusTableHeader.format(page) + "\n" + drawTextTable(
+            headers = listOf("id", "initiator", "invited", "user", "admin", "completed"), rows
+        )
+        tableMsg = "```\n$tableMsg\n```"
+        return sendTableMessage(chatId, msgId, tableMsg)
+    }
+
+    private fun sendTableMessage(chatId: Long, msgId: Long?, tableMsg: String): Long? {
+        val tgChatId = ChatId.fromId(chatId)
+        var resMsgId = msgId
+        if (resMsgId == null) {
+            val tgRes = bot.sendMessage(tgChatId,
+                text = tableMsg,
+                replyMarkup = generateStatusesKeyboard(),
+                parseMode = ParseMode.MARKDOWN
+            )
+            tgRes.fold(ifSuccess = { msg ->
+                resMsgId = msg.messageId
+            }, ifError = {})
+        } else {
+            bot.editMessageText(tgChatId,
+                messageId = resMsgId,
+                text = tableMsg,
+                replyMarkup = generateStatusesKeyboard(),
+                parseMode = ParseMode.MARKDOWN
+            )
+        }
+        return resMsgId
     }
 
     private fun generateStatusesKeyboard() = InlineKeyboardMarkup.create(listOf(listOf(
@@ -180,9 +205,5 @@ class ScenarioAdmin(
             bot.sendMessage(ChatId.fromId(chatId), UserMessageAdmin.pingFormat,
                 parseMode = ParseMode.MARKDOWN_V2)
         }
-    }
-
-    private fun remindAcceptedUsers() {
-
     }
 }

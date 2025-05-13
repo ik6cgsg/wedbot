@@ -28,6 +28,15 @@ data class InviteEventInfo(
     var isCompleted: Boolean = false,
 )
 
+data class InviteStatus(
+    val id: Int,
+    val initiatorСhatId: Long,
+    val invitedСhatId: Long,
+    var userConfirmed: Boolean?,
+    var adminConfirmed: Boolean?,
+    var isCompleted: Boolean
+)
+
 fun ResultRow.toInviteEventInfo() = InviteEventInfo(
     this[InviteEvents.id],
     this[InviteEvents.initiatorСhatId],
