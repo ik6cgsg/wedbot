@@ -15,7 +15,9 @@ class DBUtils {
             SchemaUtils.create(Users)
             SchemaUtils.create(InviteEvents)
         }
-        executeSqlFile("res/init.sql")
+        if (SystemProperties.dbNeedInit) {
+            executeSqlFile("res/init.sql")
+        }
     }
 
     private fun executeSqlFile(filePath: String) {

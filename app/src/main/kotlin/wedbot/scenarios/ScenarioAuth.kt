@@ -11,6 +11,7 @@ import com.github.kotlintelegrambot.entities.ParseMode
 object UserMessageAuth {
     const val notFound = "Кажется, я тебя не узнал, поделись, пожалуйста, контактом 🙏"
     const val notFoundTotal = "Извини, но кажется тебя нет в базе 😕"
+    const val numberAlreadyUsed = "Этот номер уже используется 😕"
     const val shareContact = "Поделиться контактом"
 
     private val greetingTemplate = """
@@ -92,22 +93,29 @@ class ScenarioAuth(
     }
 
     fun handleContact(chatId: Long, phone: String, username: String?) {
+        val tgChatId = ChatId.fromId(chatId)
         val userInfo = dbUtils.getUserByPhone(phone)
         if (userInfo != null) { // ok, no username (or updated one?), but found by phone
-            sendGreetingGroup(ChatId.fromId(chatId), userInfo)
-            userInfo.chatId = chatId
-            userInfo.username = username
-            dbUtils.updateUser(userInfo)
-        } else { // hmmm user not in db 
-            bot.sendMessage(
-                chatId = ChatId.fromId(chatId),
+            if (userInfo.chatId == null) {
+                sendGreetingGroup(tgChatId, userInfo)
+                userInfo.chatId = chatId
+                userInfo.username = username
+                dbUtils.updateUser(userInfo)
+            } else { // [hack] user sent another's guest number
+                bot.sendMessage(tgChatId,
+                    text = UserMessageAuth.numberAlreadyUsed,
+                    replyMarkup = ReplyKeyboardRemove()
+                )
+            }
+        } else { // hmmm user not in db
+            bot.sendMessage(tgChatId,
                 text = UserMessageAuth.notFoundTotal,
                 replyMarkup = ReplyKeyboardRemove()
             )
         }
     }
 
-    private fun sendGreetingGroup(chatId: ChatId, userInfo: UserInfo) {       
+    private fun sendGreetingGroup(chatId: ChatId, userInfo: UserInfo) {
          bot.sendPhoto(
             chatId = chatId,
             photo = invitationPic,

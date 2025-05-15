@@ -26,4 +26,5 @@ object SystemProperties {
     val keystorePassword: String = System.getProperty("keystore.pswd")
     val useWebhook: Boolean = System.getProperty("bot.webhook").toBoolean()
     val loggerOn: Boolean = System.getProperty("debug").toBoolean()
+    val dbNeedInit: Boolean = System.getProperty("db.init").toBoolean()
 }
