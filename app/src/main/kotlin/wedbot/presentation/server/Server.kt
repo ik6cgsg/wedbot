@@ -7,8 +7,8 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.http.HttpStatusCode
-import com.github.kotlintelegrambot.Bot
 import io.ktor.server.plugins.calllogging.*
+import wedbot.presentation.WedBot
 
 class Server(
     val bot: WedBot

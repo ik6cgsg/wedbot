@@ -5,9 +5,10 @@ build
 bin
 local.properties
 gradle.properties
-data.db
+*.db
 init.sql
 *.key
 *.pem
 *.jks
 *.p12
+*.backup

@@ -1,0 +1,182 @@
+package wedbot.data.db
+
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.StdOutSqlLogger
+import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.deleteAll
+import org.jetbrains.exposed.sql.deleteWhere
+import org.jetbrains.exposed.sql.insert
+import org.jetbrains.exposed.sql.selectAll
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.sql.update
+import wedbot.SystemProperties
+import wedbot.data.db.table.FoodInfoDrinksTable
+import wedbot.data.db.table.FoodInfoTable
+import wedbot.data.db.table.UsersTable
+import wedbot.domain.entity.Drink
+import wedbot.domain.entity.FoodInfo
+import wedbot.domain.entity.Menu
+import wedbot.domain.entity.UserInfo
+
+class DatabaseSqlite {
+    private val dbPath = "jdbc:sqlite:res/wed.db"
+    private val driver = "org.sqlite.JDBC"
+
+    init {
+        Database.connect(dbPath, driver)
+        transaction {
+            addLogger(StdOutSqlLogger)
+            SchemaUtils.create(UsersTable)
+            SchemaUtils.create(FoodInfoTable)
+            SchemaUtils.create(FoodInfoDrinksTable)
+        }
+        if (SystemProperties.dbNeedInit) {
+            transaction {
+                UsersTable.deleteAll()
+                FoodInfoTable.deleteAll()
+                FoodInfoDrinksTable.deleteAll()
+            }
+            create(UserInfo(phone = "79119889011"))
+            create(UserInfo(
+                username = "fakecgsgilich",
+                foodInfo = FoodInfo(
+                    additional = "big cock",
+                    menuChoice = Menu.HROOHROO,
+                    drinks = setOf(Drink.WHISKEY, Drink.RED, Drink.WHISKEY)
+                )
+            ))
+        }
+    }
+
+    fun getUserByUsername(username: String): UserInfo? = transaction {
+        UsersTable.leftJoin(FoodInfoTable)
+            .selectAll()
+            .where { UsersTable.username eq username }
+            .singleOrNull()
+            ?.toUserInfo()
+    }
+
+    fun getUserByPhone(phone: String): UserInfo? = transaction {
+        UsersTable.leftJoin(FoodInfoTable)
+            .selectAll()
+            .where { UsersTable.phone eq phone }
+            .singleOrNull()
+            ?.toUserInfo()
+    }
+
+    fun getByChatId(chatId: Long): UserInfo? = transaction {
+        UsersTable.leftJoin(FoodInfoTable)
+            .selectAll()
+            .where { UsersTable.chatId eq chatId }
+            .singleOrNull()
+            ?.toUserInfo()
+    }
+
+    fun create(user: UserInfo) = transaction {
+        val newFoodInfoId = if (user.foodInfo != null) {
+            val id = FoodInfoTable.insert { foodInfoTable ->
+                foodInfoTable[additional] = user.foodInfo.additional
+                foodInfoTable[menu] = user.foodInfo.menuChoice
+            } get FoodInfoTable.id
+            user.foodInfo.drinks.forEach { drinkVal ->
+                FoodInfoDrinksTable.insert { foodInfoDrinksTable ->
+                    foodInfoDrinksTable[foodInfoId] = id
+                    foodInfoDrinksTable[drink] = drinkVal
+                }
+            }
+            id
+        } else null
+        UsersTable.insert {
+            it[UsersTable.chatId] = user.chatId
+            it[UsersTable.username] = user.username
+            it[UsersTable.name] = user.name
+            it[UsersTable.phone] = user.phone
+            it[UsersTable.alias] = user.alias
+            it[UsersTable.sex] = user.sex
+            it[UsersTable.eventStatus] = user.eventStatus
+            it[UsersTable.villaStatus] = user.villaStatus
+            it[UsersTable.needTransfer] = user.needTransfer
+            it[UsersTable.role] = user.role
+            it[UsersTable.foodInfoId] = newFoodInfoId
+        }
+    }
+
+    fun update(user: UserInfo) = transaction {
+        var currentFoodInfoId = user.foodInfo?.id
+        if (user.foodInfo != null) {
+            if (user.foodInfo.id == 0) { // new food entry
+                currentFoodInfoId = FoodInfoTable.insert {
+                    it[additional] = user.foodInfo.additional
+                    it[menu] = user.foodInfo.menuChoice
+                } get FoodInfoTable.id
+                user.foodInfo.drinks.forEach { drinkVal ->
+                    FoodInfoDrinksTable.insert {
+                        it[foodInfoId] = currentFoodInfoId
+                        it[drink] = drinkVal
+                    }
+                }
+            } else { // update old one
+                FoodInfoTable.update({ FoodInfoTable.id eq user.foodInfo.id }) {
+                    it[additional] = user.foodInfo.additional
+                    it[menu] = user.foodInfo.menuChoice
+                }
+                // clear current relations
+                FoodInfoDrinksTable.deleteWhere { foodInfoId eq user.foodInfo.id }
+                user.foodInfo.drinks.forEach { drinkVal ->
+                    FoodInfoDrinksTable.insert {
+                        it[foodInfoId] = user.foodInfo.id
+                        it[drink] = drinkVal
+                    }
+                }
+            }
+        }
+        UsersTable.update({ UsersTable.id eq user.id }) {
+            it[chatId] = user.chatId
+            it[username] = user.username
+            it[name] = user.name
+            it[phone] = user.phone
+            it[alias] = user.alias
+            it[sex] = user.sex
+            it[eventStatus] = user.eventStatus
+            it[villaStatus] = user.villaStatus
+            it[needTransfer] = user.needTransfer
+            it[role] = user.role
+            it[foodInfoId] = currentFoodInfoId
+        }
+    }
+
+    private fun ResultRow.toUserInfo(): UserInfo {
+        val foodInfoId = this[UsersTable.foodInfoId]
+        val foodInfo = if (foodInfoId != null) {
+            val drinks = FoodInfoDrinksTable
+                .selectAll().where { FoodInfoDrinksTable.foodInfoId eq foodInfoId }
+                .map { it[FoodInfoDrinksTable.drink] }
+                .toSet()
+            FoodInfo(
+                id = foodInfoId,
+                additional = this[FoodInfoTable.additional],
+                menuChoice = this[FoodInfoTable.menu],
+                drinks = drinks
+            )
+        } else {
+            null
+        }
+        return UserInfo(
+            this[UsersTable.id],
+            this[UsersTable.chatId],
+            this[UsersTable.username],
+            this[UsersTable.name],
+            this[UsersTable.phone],
+            this[UsersTable.alias],
+            this[UsersTable.sex],
+            this[UsersTable.eventStatus],
+            this[UsersTable.villaStatus],
+            this[UsersTable.needTransfer],
+            this[UsersTable.role],
+            foodInfo
+        )
+    }
+}

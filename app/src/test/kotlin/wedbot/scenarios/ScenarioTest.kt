@@ -6,6 +6,7 @@ import com.github.kotlintelegrambot.Bot
 import com.github.kotlintelegrambot.entities.*
 import com.github.kotlintelegrambot.types.TelegramBotResult
 import io.mockk.*
+import wedbot.data.db.DBUtils
 import kotlin.test.*
 
 class ScenarioTest {
