@@ -6,10 +6,14 @@ import wedbot.data.repository.StaticTextRepository
 import wedbot.domain.service.NotificationListener
 import wedbot.domain.service.NotificationService
 import wedbot.domain.usecase.CalendarUseCase
+import wedbot.domain.usecase.EasterUseCase
 import wedbot.domain.usecase.HandleEventStatusUseCase
+import wedbot.domain.usecase.InfoUseCase
 import wedbot.domain.usecase.LocationUseCase
 import wedbot.domain.usecase.MenuUseCase
+import wedbot.domain.usecase.PingGuestsUseCase
 import wedbot.domain.usecase.StartUseCase
+import wedbot.domain.usecase.StatusTableUseCase
 import wedbot.domain.usecase.VerifyPhoneUseCase
 import wedbot.presentation.WedBot
 import wedbot.presentation.server.Server
@@ -29,6 +33,10 @@ class Application: NotificationListener {
     val menuUseCase = MenuUseCase(userRepository, textRepository)
     val calendarUseCase = CalendarUseCase(userRepository, textRepository)
     val locationUseCase = LocationUseCase(userRepository, textRepository)
+    val statusTableUseCase = StatusTableUseCase(userRepository, textRepository)
+    val infoUseCase = InfoUseCase(userRepository, textRepository)
+    val pingGuestsUseCase = PingGuestsUseCase(userRepository, textRepository)
+    val easterUseCase = EasterUseCase()
     val wedbot = WedBot(
         textRepository,
         startUseCase,
@@ -36,7 +44,11 @@ class Application: NotificationListener {
         handleEventStatusUseCase,
         menuUseCase,
         calendarUseCase,
-        locationUseCase
+        locationUseCase,
+        statusTableUseCase,
+        infoUseCase,
+        pingGuestsUseCase,
+        easterUseCase
     )
     val notificationService = NotificationService(userRepository, this)
 

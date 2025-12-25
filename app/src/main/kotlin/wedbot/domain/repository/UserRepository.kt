@@ -8,8 +8,8 @@ interface UserRepository {
     fun getByPhone(phone: String): Result<UserInfo>
     fun getByChatId(chatId: Long): Result<UserInfo>
     
-    fun getAdminChatIds(): List<Long>
-    fun getAllUserChatIds(): List<Long>
+    fun getAdminChatIds(): Result<List<Long>>
+    fun getAllUserChatIds(): Result<List<Long>>
     
     fun create(newUser: UserInfo)
     fun update(user: UserInfo)

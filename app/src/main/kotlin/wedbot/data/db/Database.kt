@@ -6,6 +6,7 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.addLogger
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
@@ -19,6 +20,7 @@ import wedbot.data.db.table.UsersTable
 import wedbot.domain.entity.Drink
 import wedbot.domain.entity.FoodInfo
 import wedbot.domain.entity.Menu
+import wedbot.domain.entity.Role
 import wedbot.domain.entity.UserInfo
 import wedbot.domain.entity.UserStatus
 
@@ -86,6 +88,21 @@ class DatabaseSqlite {
             .limit(limit ?: Int.MAX_VALUE)
             .map { it.toUserStatus() }
     }
+
+    fun getAllUserChatIds(): List<Long> = transaction {
+        UsersTable
+            .select(UsersTable.chatId)
+            .where { UsersTable.chatId neq null }
+            .map { it[UsersTable.chatId]!! }
+    }
+
+    fun getAdminChatIds(): List<Long> = transaction {
+        UsersTable
+            .select(UsersTable.chatId)
+            .where { (UsersTable.role eq Role.ADMIN) and (UsersTable.chatId neq null) }
+            .map { it[UsersTable.chatId]!! }
+    }
+
 
     fun create(user: UserInfo) = transaction {
         val newFoodInfoId = if (user.foodInfo != null) {

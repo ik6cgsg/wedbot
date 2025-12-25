@@ -20,12 +20,12 @@ class ExposedUserRepository(
         db.getUserByChatId(chatId) ?: throw RuntimeException()
     }
 
-    override fun getAdminChatIds(): List<Long> {
-        TODO("Not yet implemented")
+    override fun getAdminChatIds(): Result<List<Long>> = runCatching {
+        db.getAdminChatIds()
     }
 
-    override fun getAllUserChatIds(): List<Long> {
-        TODO("Not yet implemented")
+    override fun getAllUserChatIds(): Result<List<Long>> = runCatching {
+        db.getAllUserChatIds()
     }
 
     override fun create(newUser: UserInfo) {

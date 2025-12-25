@@ -1,6 +1,5 @@
 package wedbot.domain.usecase
 
-import wedbot.domain.entity.UserInfo
 import wedbot.domain.policy.canChangeStatus
 import wedbot.domain.policy.canContactOrganizers
 import wedbot.domain.policy.canDownloadCalendar
@@ -14,6 +13,10 @@ class MenuUseCase(
     private val userRepository: UserRepository,
     private val textRepository: TextRepository
 ) {
+    companion object {
+        const val COMMAND_NAME = "menu"
+    }
+
     sealed class Result {
         data class Markup(
             val message: String,
@@ -31,8 +34,6 @@ class MenuUseCase(
         STATUS_TABLE("Таблица со статусами"),
         PING_GUESTS("Отправить гостям сообщение")
     }
-
-    val commandName = "menu"
 
     operator fun invoke(chatId: Long): Result {
         val user = userRepository.getByChatId(chatId).getOrElse {
@@ -59,11 +60,11 @@ class MenuUseCase(
         if (user.canChangeStatus()) {
             keyboard.add(listOf(Button.EVENT_STATUS.label))
         }
-        if (user.canContactOrganizers()) {
-            keyboard.add(listOf(Button.HELP.label))
-        }
         if (keyboard.isEmpty()) {
             return Result.Error(textRepository.weakRights())
+        }
+        if (user.canContactOrganizers()) {
+            keyboard.add(listOf(Button.HELP.label))
         }
         return Result.Markup(
             textRepository.menuMessage(),

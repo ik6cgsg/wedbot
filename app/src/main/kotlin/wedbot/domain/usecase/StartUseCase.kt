@@ -9,6 +9,10 @@ class StartUseCase(
     private val userRepository: UserRepository,
     private val textRepository: TextRepository
 ) {
+    companion object {
+        const val COMMAND_NAME = "start"
+    }
+
     sealed class Result {
         data class UserFound(
             val greeting: String,
@@ -17,8 +21,6 @@ class StartUseCase(
         data class NeedPhoneCheck(val error: String, val label: String) : Result()
         data class Error(val msg: String) : Result()
     }
-
-    val commandName = "start"
 
     operator fun invoke(chatId: Long, username: String?): Result {
         val internalError = Result.Error(textRepository.internalError())

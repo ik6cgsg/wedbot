@@ -3,6 +3,8 @@ package wedbot.domain.repository
 interface TextRepository {
     fun internalError(): String
     fun generateGreeting(name: String?): String
+    fun infoMessage(): String
+    fun helpMessage(): String
     fun shareContactError(): String
     fun shareContactLabel(): String
     fun userNotFound(): String
@@ -17,5 +19,9 @@ interface TextRepository {
     fun eventStatusRejected(): String
     fun eventStatusThinkAgain(): String
     fun menuMessage(): String
+    fun menuUpdated(): String
     fun calendarMessage(): String
+    fun adminPingPrompt(cancelCmdName: String): String
+    fun adminPingCancel(): String
+    fun adminPingSucceed(): String
 }

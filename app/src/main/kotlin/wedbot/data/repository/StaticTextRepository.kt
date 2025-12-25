@@ -9,7 +9,11 @@ class StaticTextRepository : TextRepository {
     // start & contact commands
     override fun generateGreeting(name: String?): String = BotMessages.GREETING
         .format(name ?: "гость")
+        .plus("\n\n")
+        .plus(BotMessages.INFO_MESSAGE)
         .trimIndent()
+    override fun infoMessage(): String = BotMessages.INFO_MESSAGE.trimIndent()
+    override fun helpMessage(): String = BotMessages.HELP_MESSAGE.trimIndent()
     override fun shareContactError(): String = BotMessages.ASK_PHONE
     override fun shareContactLabel(): String = BotMessages.ASK_PHONE_LABEL
     override fun userNotFound(): String = BotMessages.USER_NOT_FOUND
@@ -29,5 +33,17 @@ class StaticTextRepository : TextRepository {
         .format(BotConstants.eventStatusDeadline)
         .trimIndent()
     override fun menuMessage(): String = BotMessages.MENU_MESSAGE
+    override fun menuUpdated(): String = BotMessages.MENU_UPDATED
     override fun calendarMessage(): String = BotMessages.CALENDAR_MESSAGE
+    override fun adminPingPrompt(cancelCmdName: String): String = BotMessages.ADMIN_PING_PROMPT
+        .format(cancelCmdName.escapeMarkdown())
+        .trimIndent()
+    override fun adminPingCancel(): String = BotMessages.ADMIN_PING_CANCEL
+    override fun adminPingSucceed(): String = BotMessages.ADMIN_PING_SUCCEED
+
+    private fun String.escapeMarkdown(): String = this
+        .replace("_", "\\_")
+        .replace("*", "\\*")
+        .replace("[", "\\[")
+        .replace("`", "\\`")
 }

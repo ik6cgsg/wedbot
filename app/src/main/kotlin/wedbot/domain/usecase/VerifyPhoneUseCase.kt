@@ -1,5 +1,7 @@
 package wedbot.domain.usecase
 
+import wedbot.domain.entity.UserStatus
+import wedbot.domain.entity.toUserStatus
 import wedbot.domain.repository.TextRepository
 import wedbot.domain.repository.UserRepository
 
@@ -8,7 +10,10 @@ class VerifyPhoneUseCase(
     private val textRepository: TextRepository
 ) {
     sealed class Result {
-        data class UserFound(val greeting: String) : Result()
+        data class UserFound(
+            val greeting: String,
+            val status: UserStatus
+        ) : Result()
         data class Error(val msg: String) : Result()
     }
 
@@ -19,7 +24,10 @@ class VerifyPhoneUseCase(
             if (user.chatId == null) {
                 val updatedUser = user.copy(chatId = chatId, username = username)
                 userRepository.update(updatedUser)
-                Result.UserFound(textRepository.generateGreeting(updatedUser.name))
+                Result.UserFound(
+                    textRepository.generateGreeting(updatedUser.name),
+                    updatedUser.toUserStatus() ?: return Result.Error(textRepository.internalError())
+                )
             } else { // [hack] user sent another's guest number
                 Result.Error(textRepository.alreadyRegistered())
             }
