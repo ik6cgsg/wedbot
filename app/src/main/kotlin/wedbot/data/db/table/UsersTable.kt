@@ -16,7 +16,7 @@ object UsersTable: Table("users") {
     val sex = enumerationByName("sex", 30, Sex::class).default(Sex.NE_BYLO)
     val eventStatus = enumerationByName("event_status", 30, Status::class).default(Status.THINKING)
     val villaStatus = enumerationByName("villa_status", 30, Status::class).default(Status.THINKING)
-    val needTransfer = bool("need_transfer").default(false)
+    val needTransfer = enumerationByName("need_transfer", 30, Status::class).default(Status.THINKING)
     val role = enumerationByName("role", 30, Role::class).default(Role.GUEST)
     val foodInfoId = integer("food_info_id").references(FoodInfoTable.id).nullable()
 

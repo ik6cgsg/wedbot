@@ -20,6 +20,7 @@ import wedbot.domain.entity.Drink
 import wedbot.domain.entity.FoodInfo
 import wedbot.domain.entity.Menu
 import wedbot.domain.entity.UserInfo
+import wedbot.domain.entity.UserStatus
 
 class DatabaseSqlite {
     private val dbPath = "jdbc:sqlite:res/wed.db"
@@ -28,7 +29,6 @@ class DatabaseSqlite {
     init {
         Database.connect(dbPath, driver)
         transaction {
-            addLogger(StdOutSqlLogger)
             SchemaUtils.create(UsersTable)
             SchemaUtils.create(FoodInfoTable)
             SchemaUtils.create(FoodInfoDrinksTable)
@@ -39,7 +39,8 @@ class DatabaseSqlite {
                 FoodInfoTable.deleteAll()
                 FoodInfoDrinksTable.deleteAll()
             }
-            create(UserInfo(phone = "79119889011"))
+            create(UserInfo(phone = "79119889011", username = "cgsgilich"))
+            create(UserInfo(username = "dergoleem"))
             create(UserInfo(
                 username = "fakecgsgilich",
                 foodInfo = FoodInfo(
@@ -67,12 +68,23 @@ class DatabaseSqlite {
             ?.toUserInfo()
     }
 
-    fun getByChatId(chatId: Long): UserInfo? = transaction {
+    fun getUserByChatId(chatId: Long): UserInfo? = transaction {
         UsersTable.leftJoin(FoodInfoTable)
             .selectAll()
             .where { UsersTable.chatId eq chatId }
             .singleOrNull()
             ?.toUserInfo()
+    }
+
+    fun getUserStatuses(offset: Long?, limit: Int?): List<UserStatus> = transaction {
+        UsersTable
+            .select(UsersTable.chatId, UsersTable.username, UsersTable.name,
+                UsersTable.eventStatus, UsersTable.villaStatus, UsersTable.needTransfer
+            )
+            .where { UsersTable.chatId neq null }
+            .offset(offset ?: 0)
+            .limit(limit ?: Int.MAX_VALUE)
+            .map { it.toUserStatus() }
     }
 
     fun create(user: UserInfo) = transaction {
@@ -179,4 +191,13 @@ class DatabaseSqlite {
             foodInfo
         )
     }
+
+    private fun ResultRow.toUserStatus() = UserStatus(
+        this[UsersTable.chatId]!!,
+        this[UsersTable.username],
+        this[UsersTable.name],
+        this[UsersTable.eventStatus],
+        this[UsersTable.villaStatus],
+        this[UsersTable.needTransfer]
+    )
 }

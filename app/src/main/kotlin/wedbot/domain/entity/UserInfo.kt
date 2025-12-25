@@ -22,16 +22,27 @@ data class UserInfo(
     val sex: Sex = Sex.NE_BYLO,
     val eventStatus: Status = Status.THINKING,
     val villaStatus: Status = Status.THINKING,
-    val needTransfer: Boolean = false,
+    val needTransfer: Status = Status.THINKING,
     val role: Role = Role.GUEST,
     val foodInfo: FoodInfo? = null
 )
 
+fun UserInfo.toUserStatus(): UserStatus? {
+    return UserStatus(
+        this.chatId ?: return null,
+        this.username,
+        this.name,
+        this.eventStatus,
+        this.villaStatus,
+        this.needTransfer
+    )
+}
+
 data class UserStatus(
     val chatId: Long,
-    val username: String,
-    val name: String,
+    val username: String?,
+    val name: String?,
     val eventStatus: Status,
     val villaStatus: Status,
-    val needTransfer: Boolean
+    val needTransfer: Status
 )

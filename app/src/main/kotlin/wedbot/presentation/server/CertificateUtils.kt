@@ -1,5 +1,6 @@
-package wedbot
+package wedbot.presentation.server
 
+import wedbot.SystemProperties
 import java.io.File
 import java.io.FileInputStream
 import java.security.KeyStore

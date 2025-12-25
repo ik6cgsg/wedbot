@@ -1,12 +1,32 @@
 package wedbot.data.resources
 
 object BotMessages {
+    const val INTERNAL_ERROR = "Что-то пошло совсем не так, попробуй связаться с организаторами."
+    // start & contact commands
     const val GREETING = """
-Привет %s! Я свадебный бот.
-Я помогу тебе узнать расписание, место проведения и другую полезную информацию.
+        Привет %s! Я свадебный бот.
+        Я помогу тебе узнать расписание, место проведения и другую полезную информацию.
     """
-    const val ASK_PHONE = "Пожалуйста, отправь свой номер телефона, чтобы я мог найти тебя в списке гостей. (Кнопка снизу)"
+    const val ASK_PHONE = "Пожалуйста, отправь свой номер телефона, чтобы я мог найти тебя в списке гостей."
     const val ASK_PHONE_LABEL = "Отправить телефон"
     const val USER_NOT_FOUND = "К сожалению, я не нашел тебя в списке гостей. Попробуй связаться с организаторами."
+    const val WEAK_RIGHTS = "Кажется у меня не хватает прав на такое..."
     const val USER_ALREADY_REGISTERED = "Этот номер телефона уже используется другим пользователем."
+    // Event status
+    const val EVENT_STATUS_PING_FIRST = "Подскажи, сможешь ли прийти? Нам важно знать количество гостей."
+    const val EVENT_STATUS_PING_DAILY = """
+        Привет %s! 
+        Надеюсь, ты уже обдумал, сможешь ли прийти?
+    """
+    const val EVENT_STATUS_ACCEPT_BUTTON = "Я буду 💯"
+    const val EVENT_STATUS_REJECT_BUTTON = "Не смогу ☹️"
+    const val EVENT_STATUS_THINK_BUTTON = "Пока думаю 🤔"
+    const val EVENT_STATUS_ACCEPTED = "Супер! Мы записали, что ты будешь."
+    const val EVENT_STATUS_REJECTED = "Охххх. Нам очень жаль...."
+    const val EVENT_STATUS_THINK_AGAIN = """
+        Большая просьба определиться до %s!!
+        Напомним завтра, либо можешь обновить статус через /menu
+    """
+    const val MENU_MESSAGE = "Пользуйся нашим меню с удовольствием!"
+    const val CALENDAR_MESSAGE = "Теперь ты можешь сохранить этот файлик себе в календарь!"
 }

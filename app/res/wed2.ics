@@ -1,0 +1,38 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//ical.marudot.com//iCal Event Maker
+CALSCALE:GREGORIAN
+BEGIN:VTIMEZONE
+TZID:Europe/Moscow
+LAST-MODIFIED:20250410T142247Z
+TZURL:https://www.tzurl.org/zoneinfo-outlook/Europe/Moscow
+X-LIC-LOCATION:Europe/Moscow
+BEGIN:STANDARD
+TZNAME:MSK
+TZOFFSETFROM:+0200
+TZOFFSETTO:+0200
+DTSTART:19700101T000000
+END:STANDARD
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTAMP:20251225T094342Z
+UID:1766655713402-36313@ical.marudot.com
+DTSTART;TZID=Europe/Moscow:20260327T160000
+DTEND;TZID=Europe/Moscow:20260327T220000
+SUMMARY:Свадьба CauseLove в Пушкинской Усадьбе
+URL:https://t.me/w3dDbot
+LOCATION:Зелёная улица\, 1\, городской посёлок Фёдоровское\, Фёдоровское городское поселение\, Тосненский район\, Ленинградская область\, 187021
+TRANSP:OPAQUE
+X-MICROSOFT-CDO-BUSYSTATUS:BUSY
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Свадьба CauseLove в Пушкинской Усадьбе
+TRIGGER:-P1W
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Свадьба CauseLove в Пушкинской Усадьбе
+TRIGGER:-P4W
+END:VALARM
+END:VEVENT
+END:VCALENDAR

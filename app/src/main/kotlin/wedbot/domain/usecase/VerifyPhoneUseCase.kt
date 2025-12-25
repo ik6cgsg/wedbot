@@ -9,8 +9,7 @@ class VerifyPhoneUseCase(
 ) {
     sealed class Result {
         data class UserFound(val greeting: String) : Result()
-        data class AlreadyUsed(val error: String) : Result()
-        data class NotFound(val error: String) : Result()
+        data class Error(val msg: String) : Result()
     }
 
     operator fun invoke(chatId: Long, phone: String, username: String?): Result {
@@ -22,10 +21,10 @@ class VerifyPhoneUseCase(
                 userRepository.update(updatedUser)
                 Result.UserFound(textRepository.generateGreeting(updatedUser.name))
             } else { // [hack] user sent another's guest number
-                Result.AlreadyUsed(textRepository.alreadyRegistered())
+                Result.Error(textRepository.alreadyRegistered())
             }
         } else {
-            Result.NotFound(textRepository.notFound())
+            Result.Error(textRepository.userNotFound())
         }
     }
 }

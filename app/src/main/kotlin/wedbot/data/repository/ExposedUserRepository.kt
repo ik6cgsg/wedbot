@@ -17,7 +17,7 @@ class ExposedUserRepository(
     }
 
     override fun getByChatId(chatId: Long): Result<UserInfo> = runCatching {
-        db.getByChatId(chatId) ?: throw RuntimeException()
+        db.getUserByChatId(chatId) ?: throw RuntimeException()
     }
 
     override fun getAdminChatIds(): List<Long> {
@@ -41,9 +41,13 @@ class ExposedUserRepository(
     }
 
     override fun getStatuses(
-        offset: Long,
-        limit: Int
+        offset: Long?,
+        limit: Int?
     ): List<UserStatus> {
-        TODO("Not yet implemented")
+        return try {
+            db.getUserStatuses(offset, limit)
+        } catch (_: Throwable) {
+            listOf()
+        }
     }
 }

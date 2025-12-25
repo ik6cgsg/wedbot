@@ -1,4 +1,4 @@
-package wedbot
+package wedbot.presentation.server
 
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -8,10 +8,10 @@ import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.plugins.calllogging.*
-import wedbot.presentation.WedBot
+import wedbot.SystemProperties
 
 class Server(
-    val bot: WedBot
+    val process: suspend (String) -> Unit
 ) {
     fun start() {
         embeddedServer(
@@ -39,7 +39,7 @@ class Server(
         routing {
             post("/${SystemProperties.botToken}") {
                 val response = call.receiveText()
-                bot.process(response)
+                process(response)
                 call.respond(HttpStatusCode.OK)
             }
         }

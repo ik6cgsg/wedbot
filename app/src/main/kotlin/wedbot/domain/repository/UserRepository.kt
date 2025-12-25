@@ -14,5 +14,5 @@ interface UserRepository {
     fun create(newUser: UserInfo)
     fun update(user: UserInfo)
     
-    fun getStatuses(offset: Long, limit: Int): List<UserStatus>
+    fun getStatuses(offset: Long?, limit: Int?): List<UserStatus>
 }
