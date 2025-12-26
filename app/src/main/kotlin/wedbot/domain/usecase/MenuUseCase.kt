@@ -25,15 +25,28 @@ class MenuUseCase(
         data class Error(val msg: String) : Result()
     }
 
-    enum class Button(val label: String) {
-        INFO("Информация о празднике"),
-        ICS("Календарик"),
-        LOCATION("Локация"),
-        EVENT_STATUS("Установить статус посещения мероприятия"),
-        HELP("Связаться с организаторами"),
-        STATUS_TABLE("Таблица со статусами"),
-        PING_GUESTS("Отправить гостям сообщение")
+    enum class Button {
+        INFO,
+        ICS,
+        LOCATION,
+        EVENT_STATUS,
+        HELP,
+        STATUS_TABLE,
+        PING_GUESTS
     }
+
+    val buttonToLabel = mapOf(
+        Button.INFO to textRepository.menuButtonInfo(),
+        Button.ICS to textRepository.menuButtonIcs(),
+        Button.LOCATION to textRepository.menuButtonLocation(),
+        Button.EVENT_STATUS to textRepository.menuButtonEventStatus(),
+        Button.HELP to textRepository.menuButtonHelp(),
+        Button.STATUS_TABLE to textRepository.menuButtonStatusTable(),
+        Button.PING_GUESTS to textRepository.menuButtonPingGuests()
+    )
+
+    private val Button.label: String
+        get() = buttonToLabel[this] ?: ""
 
     operator fun invoke(chatId: Long): Result {
         val user = userRepository.getByChatId(chatId).getOrElse {

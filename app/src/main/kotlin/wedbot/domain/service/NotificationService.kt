@@ -15,6 +15,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.logging.Level
+import java.util.logging.Logger
 
 interface NotificationListener {
     fun stillThinkingAboutEvent(chatId: Long, name: String?)
@@ -24,6 +26,7 @@ class NotificationService(
     private val userRepository: UserRepository,
     private val listener: NotificationListener
 ) {
+    private val logger = Logger.getLogger(this::class.java.name)
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val zone = ZoneId.of("Europe/Moscow")
@@ -34,10 +37,10 @@ class NotificationService(
 
     fun startDailyReminder() {
         if (ZonedDateTime.now(zone).isAfter(deadline)) {
-            // TODO: send all thinking users warning?
-            println("time for survey is out")
+            logger.warning("Notification deadline has passed. Daily reminders will not be started.")
             return
         }
+        logger.info("Starting daily reminders...")
         scope.launch {
             while (isActive) {
                 var targetMskTime: ZonedDateTime = LocalDate.now(zone)
@@ -50,22 +53,26 @@ class NotificationService(
                     targetMskTime = targetMskTime.plusDays(1)
                 }
                 val delayMillis = ChronoUnit.MILLIS.between(now, targetMskTime)
+                logger.info("Next reminder scheduled for $targetMskTime (in ${delayMillis / 1000} seconds)")
                 delay(delayMillis)
                 try {
                     processDailyReminders()
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    logger.log(Level.SEVERE, "Error during daily reminder processing", e)
                 }
             }
         }
     }
 
     private fun processDailyReminders() {
+        logger.info("Processing daily reminders...")
         val userStatuses = userRepository.getStatuses(null, null)
-        userStatuses
-            .filter { it.eventStatus == Status.THINKING }
-            .forEach { user ->
-                listener.stillThinkingAboutEvent(user.chatId, user.name)
-            }
+        val eventThinkingUsers = userStatuses.filter { it.eventStatus == Status.THINKING }
+
+        logger.info("Found ${eventThinkingUsers.size} users with 'THINKING' status for event. Sending notifications...")
+        eventThinkingUsers.forEach { user ->
+            listener.stillThinkingAboutEvent(user.chatId, user.name)
+        }
+        logger.info("Finished processing daily reminders.")
     }
 }

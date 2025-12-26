@@ -9,11 +9,13 @@ class StaticTextRepository : TextRepository {
     // start & contact commands
     override fun generateGreeting(name: String?): String = BotMessages.GREETING
         .format(name ?: "гость")
-        .plus("\n\n")
+        .plus("\n")
         .plus(BotMessages.INFO_MESSAGE)
         .trimIndent()
     override fun infoMessage(): String = BotMessages.INFO_MESSAGE.trimIndent()
-    override fun helpMessage(): String = BotMessages.HELP_MESSAGE.trimIndent()
+    override fun helpMessage(): String = BotMessages.HELP_MESSAGE
+        .escapeMarkdown()
+        .trimIndent()
     override fun shareContactError(): String = BotMessages.ASK_PHONE
     override fun shareContactLabel(): String = BotMessages.ASK_PHONE_LABEL
     override fun userNotFound(): String = BotMessages.USER_NOT_FOUND
@@ -35,11 +37,19 @@ class StaticTextRepository : TextRepository {
     override fun menuMessage(): String = BotMessages.MENU_MESSAGE
     override fun menuUpdated(): String = BotMessages.MENU_UPDATED
     override fun calendarMessage(): String = BotMessages.CALENDAR_MESSAGE
-    override fun adminPingPrompt(cancelCmdName: String): String = BotMessages.ADMIN_PING_PROMPT
-        .format(cancelCmdName.escapeMarkdown())
-        .trimIndent()
+    override fun adminPingStarted(): String = BotMessages.ADMIN_PING_STARTED
+    override fun adminPingPrompt(): String = BotMessages.ADMIN_PING_PROMPT.trimIndent()
     override fun adminPingCancel(): String = BotMessages.ADMIN_PING_CANCEL
+    override fun adminPingCancelButton(): String = BotMessages.ADMIN_PING_CANCEL_BUTTON
     override fun adminPingSucceed(): String = BotMessages.ADMIN_PING_SUCCEED
+    override fun adminMessageHeader(): String = BotMessages.ADMIN_MSG_HEADER
+    override fun menuButtonInfo(): String = BotMessages.MENU_BUTTON_INFO
+    override fun menuButtonIcs(): String = BotMessages.MENU_BUTTON_ICS
+    override fun menuButtonLocation(): String = BotMessages.MENU_BUTTON_LOCATION
+    override fun menuButtonEventStatus(): String = BotMessages.MENU_BUTTON_EVENT_STATUS
+    override fun menuButtonHelp(): String = BotMessages.MENU_BUTTON_HELP
+    override fun menuButtonStatusTable(): String = BotMessages.MENU_BUTTON_STATUS_TABLE
+    override fun menuButtonPingGuests(): String = BotMessages.MENU_BUTTON_PING_GUESTS
 
     private fun String.escapeMarkdown(): String = this
         .replace("_", "\\_")

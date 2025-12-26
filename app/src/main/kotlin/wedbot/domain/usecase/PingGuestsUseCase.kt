@@ -13,7 +13,11 @@ class PingGuestsUseCase(
     }
 
     sealed class CheckResult {
-        data class Allowed(val prompt: String) : CheckResult()
+        data class Allowed(
+            val startMessage: String,
+            val prompt: String,
+            val cancelButton: String
+        ) : CheckResult()
         data class Error(val msg: String) : CheckResult()
     }
 
@@ -22,7 +26,11 @@ class PingGuestsUseCase(
             return CheckResult.Error(textRepository.userNotFound())
         }
         return if (user.canViewAdminPanel()) {
-            CheckResult.Allowed(textRepository.adminPingPrompt(COMMAND_CANCEL))
+            CheckResult.Allowed(
+                textRepository.adminPingStarted(),
+                textRepository.adminPingPrompt(),
+                textRepository.adminPingCancelButton()
+            )
         } else {
             CheckResult.Error(textRepository.weakRights())
         }

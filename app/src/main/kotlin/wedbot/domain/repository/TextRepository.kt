@@ -21,7 +21,17 @@ interface TextRepository {
     fun menuMessage(): String
     fun menuUpdated(): String
     fun calendarMessage(): String
-    fun adminPingPrompt(cancelCmdName: String): String
+    fun adminPingStarted(): String
+    fun adminPingPrompt(): String
     fun adminPingCancel(): String
+    fun adminPingCancelButton(): String
     fun adminPingSucceed(): String
+    fun adminMessageHeader(): String
+    fun menuButtonInfo(): String
+    fun menuButtonIcs(): String
+    fun menuButtonLocation(): String
+    fun menuButtonEventStatus(): String
+    fun menuButtonHelp(): String
+    fun menuButtonStatusTable(): String
+    fun menuButtonPingGuests(): String
 }
