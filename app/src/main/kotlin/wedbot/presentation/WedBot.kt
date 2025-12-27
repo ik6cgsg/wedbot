@@ -23,6 +23,7 @@ import com.github.kotlintelegrambot.entities.keyboard.KeyboardButton
 import com.github.kotlintelegrambot.logging.LogLevel
 import com.github.kotlintelegrambot.webhook
 import kotlinx.coroutines.delay
+import wedbot.BotConstants
 import wedbot.SystemProperties
 import wedbot.domain.entity.Status
 import wedbot.domain.entity.UserStatus
@@ -38,6 +39,7 @@ import wedbot.domain.usecase.StartUseCase
 import wedbot.domain.usecase.StatusTableUseCase
 import wedbot.domain.usecase.VerifyPhoneUseCase
 import wedbot.presentation.server.CertificateUtils
+import java.io.File
 import java.util.Collections
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
@@ -156,7 +158,12 @@ class WedBot(
     }
 
     private suspend fun userVerifiedAfterStart(chatId: Long, greeting: String, status: UserStatus) {
-        sendMessage(chatId, greeting)
+        if (status.eventStatus == Status.SLEEVE) {
+            sendMessage(chatId, textRepository.internalError())
+        } else {
+            bot.sendPhoto(ChatId.fromId(chatId), TelegramFile.ByFile(File(BotConstants.invitePhotoPath)))
+            sendMessage(chatId, greeting)
+        }
         if (status.eventStatus == Status.THINKING) {
             bot.sendChatAction(ChatId.fromId(chatId), ChatAction.TYPING)
             delay(1000)
@@ -199,7 +206,9 @@ class WedBot(
                             messageId = callbackQuery.message?.messageId,
                             text = res.newText
                         )
-                        sendMessage(chatId, textRepository.menuUpdated())
+                        if (res.newStatus != Status.SLEEVE) {
+                            sendMessage(chatId, textRepository.menuUpdated())
+                        }
                     }
                     is HandleEventStatusUseCase.Result.Error -> {
                         bot.answerCallbackQuery(

@@ -11,7 +11,8 @@ object SystemProperties {
 }
 
 object BotConstants {
-    const val eventStatusDeadline = "05.01.2026"
+    const val eventStatusDeadline = "06.01.2026"
     const val calendarFilePath = "res/wed2.ics"
+    const val invitePhotoPath = "res/wed2.png"
     const val locationCoordinates = "59.646974, 30.516003"
 }

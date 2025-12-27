@@ -9,11 +9,11 @@ fun UserInfo.canViewAdminPanel(): Boolean {
 }
 
 fun UserInfo.canDownloadCalendar(): Boolean {
-    return role == Role.GUEST && eventStatus == Status.APPROVED
+    return (role == Role.GUEST && eventStatus == Status.APPROVED) || role == Role.ADMIN
 }
 
 fun UserInfo.canViewLocation(): Boolean {
-    return role == Role.GUEST && eventStatus == Status.APPROVED
+    return (role == Role.GUEST && eventStatus == Status.APPROVED) || role == Role.ADMIN
 }
 
 fun UserInfo.canChangeStatus(): Boolean {

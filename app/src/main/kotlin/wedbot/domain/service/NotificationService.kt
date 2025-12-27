@@ -47,8 +47,6 @@ class NotificationService(
                     .atTime(LocalTime.of(11, 0))
                     .atZone(zone)
                 val now = ZonedDateTime.now(zone)
-                // TODO: remove
-                //targetMskTime = now.plusSeconds(10)
                 if (now.isAfter(targetMskTime)) {
                     targetMskTime = targetMskTime.plusDays(1)
                 }
@@ -68,7 +66,6 @@ class NotificationService(
         logger.info("Processing daily reminders...")
         val userStatuses = userRepository.getStatuses(null, null)
         val eventThinkingUsers = userStatuses.filter { it.eventStatus == Status.THINKING }
-
         logger.info("Found ${eventThinkingUsers.size} users with 'THINKING' status for event. Sending notifications...")
         eventThinkingUsers.forEach { user ->
             listener.stillThinkingAboutEvent(user.chatId, user.name)

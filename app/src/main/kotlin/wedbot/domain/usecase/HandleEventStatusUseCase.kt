@@ -9,7 +9,10 @@ class HandleEventStatusUseCase(
     private val textRepository: TextRepository
 ) {
     sealed class Result {
-        data class Edit(val newText: String) : Result()
+        data class Edit(
+            val newText: String,
+            val newStatus: Status
+        ) : Result()
         data class DeleteWithAlert(val alert: String) : Result()
         data class Error(val msg: String) : Result()
     }
@@ -40,12 +43,12 @@ class HandleEventStatusUseCase(
         return when (status) {
             Status.APPROVED -> {
                 userRepository.update(user.copy(eventStatus = Status.APPROVED))
-                Result.Edit(textRepository.eventStatusAccepted())
+                Result.Edit(textRepository.eventStatusAccepted(), Status.APPROVED)
             }
             Status.SLEEVE -> {
                 // TODO: delete??
                 userRepository.update(user.copy(eventStatus = Status.SLEEVE))
-                Result.Edit(textRepository.eventStatusRejected())
+                Result.Edit(textRepository.eventStatusRejected(), Status.SLEEVE)
             }
             Status.THINKING -> {
                 Result.DeleteWithAlert(textRepository.eventStatusThinkAgain())

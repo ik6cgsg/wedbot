@@ -8,11 +8,13 @@ class StaticTextRepository : TextRepository {
     override fun internalError(): String = BotMessages.INTERNAL_ERROR
     // start & contact commands
     override fun generateGreeting(name: String?): String = BotMessages.GREETING
-        .format(name ?: "гость")
-        .plus("\n")
-        .plus(BotMessages.INFO_MESSAGE)
+        .format(name?.let {", $it"} ?: "")
         .trimIndent()
-    override fun infoMessage(): String = BotMessages.INFO_MESSAGE.trimIndent()
+        .plus("\n\n")
+        .plus(infoMessage())
+    override fun infoMessage(): String = BotMessages.INFO_MESSAGE
+        .format(BotConstants.eventStatusDeadline)
+        .trimIndent()
     override fun helpMessage(): String = BotMessages.HELP_MESSAGE
         .escapeMarkdown()
         .trimIndent()
@@ -35,10 +37,13 @@ class StaticTextRepository : TextRepository {
         .format(BotConstants.eventStatusDeadline)
         .trimIndent()
     override fun menuMessage(): String = BotMessages.MENU_MESSAGE
+        .trimIndent()
     override fun menuUpdated(): String = BotMessages.MENU_UPDATED
     override fun calendarMessage(): String = BotMessages.CALENDAR_MESSAGE
+        .trimIndent()
     override fun adminPingStarted(): String = BotMessages.ADMIN_PING_STARTED
-    override fun adminPingPrompt(): String = BotMessages.ADMIN_PING_PROMPT.trimIndent()
+    override fun adminPingPrompt(): String = BotMessages.ADMIN_PING_PROMPT
+        .trimIndent()
     override fun adminPingCancel(): String = BotMessages.ADMIN_PING_CANCEL
     override fun adminPingCancelButton(): String = BotMessages.ADMIN_PING_CANCEL_BUTTON
     override fun adminPingSucceed(): String = BotMessages.ADMIN_PING_SUCCEED
