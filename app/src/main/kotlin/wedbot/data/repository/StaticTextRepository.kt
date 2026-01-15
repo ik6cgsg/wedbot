@@ -55,6 +55,7 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonHelp(): String = BotMessages.MENU_BUTTON_HELP
     override fun menuButtonStatusTable(): String = BotMessages.MENU_BUTTON_STATUS_TABLE
     override fun menuButtonPingGuests(): String = BotMessages.MENU_BUTTON_PING_GUESTS
+    override fun techWorks(): String = BotMessages.TECH_WORKS
 
     private fun String.escapeMarkdown(): String = this
         .replace("_", "\\_")

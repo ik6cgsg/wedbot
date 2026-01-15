@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import wedbot.BotConstants
+import wedbot.SystemProperties
 import wedbot.domain.entity.Status
 import wedbot.domain.repository.UserRepository
 import java.time.LocalDate
@@ -37,6 +38,7 @@ class NotificationService(
 
     fun startDailyReminder() {
         logger.info("Starting daily reminders...")
+        if (SystemProperties.dummy) return
         scope.launch {
             while (isActive) {
                 if (ZonedDateTime.now(zone).isAfter(deadline)) {

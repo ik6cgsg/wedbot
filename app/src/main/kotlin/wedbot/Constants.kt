@@ -6,7 +6,8 @@ object SystemProperties {
     val botPort: Int = System.getProperty("bot.port").toIntOrNull() ?: 80
     val keystorePassword: String = System.getProperty("keystore.pswd")
     val useWebhook: Boolean = System.getProperty("bot.webhook").toBoolean()
-    val loggerOn: Boolean = System.getProperty("debug").toBoolean()
+    val loggerOn: Boolean = System.getProperty("mode.debug").toBoolean()
+    val dummy: Boolean = System.getProperty("mode.dummy").toBoolean()
     val dbNeedInit: Boolean = System.getProperty("db.init").toBoolean()
 }
 

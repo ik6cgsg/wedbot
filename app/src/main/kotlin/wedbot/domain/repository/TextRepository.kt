@@ -34,4 +34,5 @@ interface TextRepository {
     fun menuButtonHelp(): String
     fun menuButtonStatusTable(): String
     fun menuButtonPingGuests(): String
+    fun techWorks(): String
 }

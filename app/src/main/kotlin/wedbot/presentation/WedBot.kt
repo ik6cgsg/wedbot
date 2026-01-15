@@ -10,6 +10,7 @@ import com.github.kotlintelegrambot.logging.LogLevel
 import com.github.kotlintelegrambot.webhook
 import wedbot.SystemProperties
 import wedbot.presentation.dispatcher.AuthDispatcher
+import wedbot.presentation.dispatcher.DummyDispatcher
 import wedbot.presentation.dispatcher.EasterDispatcher
 import wedbot.presentation.dispatcher.EventStatusDispatcher
 import wedbot.presentation.dispatcher.MenuDispatcher
@@ -27,7 +28,8 @@ class WedBot(
     private val menuDispatcher: MenuDispatcher,
     private val statusTableDispatcher: StatusTableDispatcher,
     private val pingDispatcher: PingDispatcher,
-    private val easterDispatcher: EasterDispatcher
+    private val easterDispatcher: EasterDispatcher,
+    private val dummyDispatcher: DummyDispatcher
 ) {
     private val bot: Bot
     private val logger = Logger.getLogger(this::class.java.name)
@@ -57,12 +59,16 @@ class WedBot(
     }
 
     private fun dispatcher(): (Dispatcher.() -> Unit) = {
-        pingDispatcher.setup(this)
-        authDispatcher.setup(this)
-        eventStatusDispatcher.setup(this)
-        menuDispatcher.setup(this)
-        statusTableDispatcher.setup(this)
-        easterDispatcher.setup(this)
+        if (SystemProperties.dummy) {
+            dummyDispatcher.setup(this)
+        } else {
+            pingDispatcher.setup(this)
+            authDispatcher.setup(this)
+            eventStatusDispatcher.setup(this)
+            menuDispatcher.setup(this)
+            statusTableDispatcher.setup(this)
+            easterDispatcher.setup(this)
+        }
         telegramError {
             logger.severe("Telegram Error: ${error.getErrorMessage()}")
         }

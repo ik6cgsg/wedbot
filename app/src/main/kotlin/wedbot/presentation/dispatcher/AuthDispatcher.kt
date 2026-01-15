@@ -7,13 +7,11 @@ import com.github.kotlintelegrambot.dispatcher.contact
 import com.github.kotlintelegrambot.entities.ChatAction
 import com.github.kotlintelegrambot.entities.ChatId
 import com.github.kotlintelegrambot.entities.TelegramFile
-import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import kotlinx.coroutines.delay
 import wedbot.BotConstants
 import wedbot.domain.entity.Status
 import wedbot.domain.entity.UserStatus
 import wedbot.domain.repository.TextRepository
-import wedbot.domain.usecase.HandleEventStatusUseCase
 import wedbot.domain.usecase.StartUseCase
 import wedbot.domain.usecase.VerifyPhoneUseCase
 import wedbot.presentation.util.ReplyMarkupHelper

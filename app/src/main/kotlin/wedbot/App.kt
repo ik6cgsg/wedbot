@@ -18,6 +18,7 @@ import wedbot.domain.usecase.StatusTableUseCase
 import wedbot.domain.usecase.VerifyPhoneUseCase
 import wedbot.presentation.WedBot
 import wedbot.presentation.dispatcher.AuthDispatcher
+import wedbot.presentation.dispatcher.DummyDispatcher
 import wedbot.presentation.dispatcher.EasterDispatcher
 import wedbot.presentation.dispatcher.EventStatusDispatcher
 import wedbot.presentation.dispatcher.MenuDispatcher
@@ -56,6 +57,7 @@ class Application: NotificationListener {
     val statusTableDispatcher: StatusTableDispatcher
     val pingDispatcher: PingDispatcher
     val easterDispatcher: EasterDispatcher
+    val dummyDispatcher: DummyDispatcher
     // Bot
     val wedbot: WedBot
 
@@ -88,6 +90,7 @@ class Application: NotificationListener {
         statusTableDispatcher = StatusTableDispatcher(statusTableUseCase)
         pingDispatcher = PingDispatcher(textRepository, pingGuestsUseCase)
         easterDispatcher = EasterDispatcher(easterUseCase)
+        dummyDispatcher = DummyDispatcher(textRepository)
         // Super Mega WedBot initialization
         wedbot = WedBot(
             authDispatcher,
@@ -95,7 +98,8 @@ class Application: NotificationListener {
             menuDispatcher,
             statusTableDispatcher,
             pingDispatcher,
-            easterDispatcher
+            easterDispatcher,
+            dummyDispatcher
         )
     }
 

@@ -77,4 +77,5 @@ object BotMessages {
     const val MENU_BUTTON_HELP = "Связаться с организаторами"
     const val MENU_BUTTON_STATUS_TABLE = "Таблица со статусами"
     const val MENU_BUTTON_PING_GUESTS ="Отправить гостям сообщение"
+    const val TECH_WORKS = "🛠️ Извини, я пока не работаю... (ведутся технические работы) ((добавляются новые баги)) 🛠️"
 }
