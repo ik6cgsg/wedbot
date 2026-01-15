@@ -17,7 +17,7 @@ class HandleEventStatusUseCaseTest {
         val textRepository = FakeTextRepository()
         val useCase = HandleEventStatusUseCase(userRepository, textRepository)
         val newStatus = Status.APPROVED
-        val expected = HandleEventStatusUseCase.Result.Edit("eventStatusAccepted")
+        val expected = HandleEventStatusUseCase.Result.Edit("eventStatusAccepted", newStatus)
         val result = useCase.invoke(userThinking.chatId!!, newStatus)
         assertEquals(expected, result)
         val updatedUser = userRepository.getByChatId(userThinking.chatId).getOrNull()
@@ -30,7 +30,7 @@ class HandleEventStatusUseCaseTest {
         val textRepository = FakeTextRepository()
         val useCase = HandleEventStatusUseCase(userRepository, textRepository)
         val newStatus = Status.SLEEVE
-        val expected = HandleEventStatusUseCase.Result.Edit("eventStatusRejected")
+        val expected = HandleEventStatusUseCase.Result.Edit("eventStatusRejected", newStatus)
         val result = useCase.invoke(userThinking.chatId!!, newStatus)
         assertEquals(expected, result)
         val updatedUser = userRepository.getByChatId(userThinking.chatId).getOrNull()

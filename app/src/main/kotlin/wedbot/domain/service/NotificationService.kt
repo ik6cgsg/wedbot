@@ -36,13 +36,13 @@ class NotificationService(
         .atStartOfDay(zone)
 
     fun startDailyReminder() {
-        if (ZonedDateTime.now(zone).isAfter(deadline)) {
-            logger.warning("Notification deadline has passed. Daily reminders will not be started.")
-            return
-        }
         logger.info("Starting daily reminders...")
         scope.launch {
             while (isActive) {
+                if (ZonedDateTime.now(zone).isAfter(deadline)) {
+                    logger.warning("Notification deadline has passed. Stopping daily reminders...")
+                    return@launch
+                }
                 var targetMskTime: ZonedDateTime = LocalDate.now(zone)
                     .atTime(LocalTime.of(11, 0))
                     .atZone(zone)

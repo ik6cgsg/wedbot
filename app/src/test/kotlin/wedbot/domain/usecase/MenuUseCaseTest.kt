@@ -23,7 +23,8 @@ class MenuUseCaseTest {
             listOf(
                 listOf("menuButtonInfo"),
                 listOf("menuButtonStatusTable"),
-                listOf("menuButtonPingGuests")
+                listOf("menuButtonPingGuests"),
+                listOf("menuButtonIcs", "menuButtonLocation")
             )
         )
         val result = useCase.invoke(adminUser.chatId!!)
