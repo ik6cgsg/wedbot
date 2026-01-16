@@ -2,6 +2,7 @@ package wedbot.data.resources
 
 object BotMessages {
     const val INTERNAL_ERROR = "Что-то пошло совсем не так, попробуй связаться с организаторами."
+    const val TOTAL_SLEEVE = "Кажется ты по ошибке отказался от нашего мероприятия, попробуй связаться с организаторами."
     // start & contact commands
     const val GREETING = """
         Привет, наш дорогой гость%s! 💋
@@ -17,8 +18,6 @@ object BotMessages {
         🕓 *сбор* гостей - 16:00
         🕔 *официальная* часть - 17:00
         🕚 *окончание* торжества - 23:00
-        
-        ‼️ Очень просим указать статус до *%s*, так как это очень важно для организации свадьбы.
         
         🙏 Обязательно заглядывай в наше /menu за интересностями
         
@@ -50,11 +49,20 @@ object BotMessages {
         Большая просьба определиться до %s!
         Напомним завтра или ты можешь обновить статус через /menu
     """
+    // Menu
     const val MENU_MESSAGE = """
         Рядом с клавиатурой появилось меню. 
         Там можно найти дополнительную информацию о мероприятии.
     """
     const val MENU_UPDATED = "Меню обновлено! Не забудь заглянуть 😉"
+    const val MENU_BUTTON_INFO = "Информация о празднике"
+    const val MENU_BUTTON_ICS = "Календарик"
+    const val MENU_BUTTON_LOCATION = "Геометка"
+    const val MENU_BUTTON_EVENT_STATUS = "Установить статус посещения мероприятия"
+    const val MENU_BUTTON_HELP = "Связаться с организаторами"
+    const val MENU_BUTTON_STATUS_TABLE = "Таблица со статусами"
+    const val MENU_BUTTON_PING_GUESTS ="Отправить гостям сообщение"
+    const val MENU_BUTTON_DRESS_CODE ="ДрессКот"
     const val CALENDAR_MESSAGE = """
         Теперь ты можешь сохранить этот файлик себе в календарь!
         
@@ -64,18 +72,21 @@ object BotMessages {
         3. Открыть Календарь, не отпуская при этом ics-файл
         4. Отпустить файлик в любом месяце (нужно, чтобы Календарь отображал именно один месяц)
     """
+    // Admin
     const val ADMIN_PING_STARTED = "Режим рассылки активирован"
-    const val ADMIN_PING_PROMPT = "Введите текст сообщения для рассылки *всем* гостям (или нажмите кнопку ниже для отмены)"
+    const val ADMIN_PING_ALL_PROMPT = """
+        Введите текст для рассылки *всем* участникам бота
+        (поменять/отменить режим можно по кнопкам ниже)
+    """
+    const val ADMIN_PING_ALL_BUTTON = "Отправить всем пользователям"
+    const val ADMIN_PING_GUESTS_PROMPT = """
+        Введите текст для рассылки *согласившимся* гостям
+        (поменять/отменить режим можно по кнопкам ниже)
+    """
+    const val ADMIN_PING_GUESTS_BUTTON = "Отправить только гостям"
     const val ADMIN_PING_CANCEL = "Рассылка отменена"
     const val ADMIN_PING_CANCEL_BUTTON = "Отменить рассылку"
     const val ADMIN_PING_SUCCEED = "Рассылка успешно завершена"
     const val ADMIN_MSG_HEADER = "⚠️Сообщение от администрации ⚠️"
-    const val MENU_BUTTON_INFO = "Информация о празднике"
-    const val MENU_BUTTON_ICS = "Календарик"
-    const val MENU_BUTTON_LOCATION = "Геометка"
-    const val MENU_BUTTON_EVENT_STATUS = "Установить статус посещения мероприятия"
-    const val MENU_BUTTON_HELP = "Связаться с организаторами"
-    const val MENU_BUTTON_STATUS_TABLE = "Таблица со статусами"
-    const val MENU_BUTTON_PING_GUESTS ="Отправить гостям сообщение"
     const val TECH_WORKS = "🛠️ Извини, я пока не работаю... (ведутся технические работы) ((добавляются новые баги)) 🛠️"
 }

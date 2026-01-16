@@ -22,6 +22,7 @@ class MenuUseCaseTest {
             "menuMessage",
             listOf(
                 listOf("menuButtonInfo"),
+                listOf("menuButtonDressCode"),
                 listOf("menuButtonStatusTable"),
                 listOf("menuButtonPingGuests"),
                 listOf("menuButtonIcs", "menuButtonLocation")
@@ -39,6 +40,7 @@ class MenuUseCaseTest {
             "menuMessage",
             listOf(
                 listOf("menuButtonInfo"),
+                listOf("menuButtonDressCode"),
                 listOf("menuButtonIcs", "menuButtonLocation"),
                 listOf("menuButtonHelp")
             )
@@ -73,10 +75,15 @@ class MenuUseCaseTest {
     }
 
     @Test
-    fun `invoke - должен вернуть ошибку для отказавшегося пользователя`() {
+    fun `invoke - должен показать только кнопку помощи для отказавшегося пользователя`() {
         val userRepository = FakeUserRepository(listOf(rejectedGuest))
         val useCase = MenuUseCase(userRepository, FakeTextRepository())
-        val expected = MenuUseCase.Result.Error("weakRights")
+        val expected = MenuUseCase.Result.Markup(
+            "totalSleeve",
+            listOf(
+                listOf("menuButtonHelp")
+            )
+        )
         val result = useCase.invoke(4L)
         assertEquals(expected, result)
     }

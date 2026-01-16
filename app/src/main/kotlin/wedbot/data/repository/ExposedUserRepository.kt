@@ -28,6 +28,10 @@ class ExposedUserRepository(
         db.getAllUserChatIds()
     }
 
+    override fun getGuestsChatIds(): Result<List<Long>> = runCatching {
+        db.getGuestsChatIds()
+    }
+
     override fun create(newUser: UserInfo) {
         try {
             db.create(newUser)

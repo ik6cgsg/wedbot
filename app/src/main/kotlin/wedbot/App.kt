@@ -7,6 +7,7 @@ import wedbot.data.repository.StaticTextRepository
 import wedbot.domain.service.NotificationListener
 import wedbot.domain.service.NotificationService
 import wedbot.domain.usecase.CalendarUseCase
+import wedbot.domain.usecase.DressCodeUseCase
 import wedbot.domain.usecase.EasterUseCase
 import wedbot.domain.usecase.HandleEventStatusUseCase
 import wedbot.domain.usecase.InfoUseCase
@@ -46,6 +47,7 @@ class Application: NotificationListener {
     val locationUseCase = LocationUseCase(userRepository, textRepository)
     val statusTableUseCase = StatusTableUseCase(userRepository, textRepository)
     val infoUseCase = InfoUseCase(userRepository, textRepository)
+    val dressCodeUseCase = DressCodeUseCase(userRepository, textRepository)
     val pingGuestsUseCase = PingGuestsUseCase(userRepository, textRepository)
     val easterUseCase = EasterUseCase()
     // Services
@@ -68,7 +70,7 @@ class Application: NotificationListener {
         }
         eventStatusDispatcher = EventStatusDispatcher(textRepository, handleEventStatusUseCase)
         menuDispatcher = MenuDispatcher(
-            textRepository, menuUseCase, infoUseCase, calendarUseCase, locationUseCase,
+            textRepository, menuUseCase, infoUseCase, dressCodeUseCase, calendarUseCase, locationUseCase,
             object : MenuEventInterface {
                 override fun needToHandle(bot: Bot, chatId: Long): Boolean {
                     return !pingDispatcher.isUserInPingMode(chatId)

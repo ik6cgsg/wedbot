@@ -2,6 +2,7 @@ package wedbot.domain.repository
 
 interface TextRepository {
     fun internalError(): String
+    fun totalSleeve(): String
     fun generateGreeting(name: String?): String
     fun infoMessage(): String
     fun helpMessage(): String
@@ -22,7 +23,10 @@ interface TextRepository {
     fun menuUpdated(): String
     fun calendarMessage(): String
     fun adminPingStarted(): String
-    fun adminPingPrompt(): String
+    fun adminPingAllPrompt(): String
+    fun adminPingAllButton(): String
+    fun adminPingGuestsPrompt(): String
+    fun adminPingGuestsButton(): String
     fun adminPingCancel(): String
     fun adminPingCancelButton(): String
     fun adminPingSucceed(): String
@@ -34,5 +38,6 @@ interface TextRepository {
     fun menuButtonHelp(): String
     fun menuButtonStatusTable(): String
     fun menuButtonPingGuests(): String
+    fun menuButtonDressCode(): String
     fun techWorks(): String
 }

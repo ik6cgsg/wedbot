@@ -8,6 +8,7 @@ import com.github.kotlintelegrambot.entities.ChatId
 import com.github.kotlintelegrambot.entities.TelegramFile
 import wedbot.domain.repository.TextRepository
 import wedbot.domain.usecase.CalendarUseCase
+import wedbot.domain.usecase.DressCodeUseCase
 import wedbot.domain.usecase.InfoUseCase
 import wedbot.domain.usecase.LocationUseCase
 import wedbot.domain.usecase.MenuUseCase
@@ -26,6 +27,7 @@ class MenuDispatcher(
     private val textRepository: TextRepository,
     private val menuUseCase: MenuUseCase,
     private val infoUseCase: InfoUseCase,
+    private val dressCodeUseCase: DressCodeUseCase,
     private val calendarUseCase: CalendarUseCase,
     private val locationUseCase: LocationUseCase,
     private val menuEventHandler: MenuEventInterface
@@ -54,6 +56,7 @@ class MenuDispatcher(
                     if (!menuEventHandler.needToHandle(bot, chatId)) return@text
                     when (button) {
                         MenuUseCase.Button.INFO -> bot.showInfo(chatId)
+                        MenuUseCase.Button.DRESS_CODE -> bot.showDressCode(chatId)
                         MenuUseCase.Button.ICS -> bot.showCalendar(chatId)
                         MenuUseCase.Button.LOCATION -> bot.showLocation(chatId)
                         MenuUseCase.Button.EVENT_STATUS -> menuEventHandler.pingEventStatusFirst(bot, chatId)
@@ -75,6 +78,20 @@ class MenuDispatcher(
             is InfoUseCase.Result.Error -> sendSafeMessage(chatId, res.msg)
         }
         logger.info("<<< END showInfo")
+        logger.fine("with $res")
+    }
+
+    private fun Bot.showDressCode(chatId: Long) {
+        logger.info(">>> START showDressCode for $chatId")
+        val res = dressCodeUseCase(chatId)
+        when (res) {
+            is DressCodeUseCase.Result.DocumentInfo -> sendPhoto(
+                chatId = ChatId.fromId(chatId),
+                photo = TelegramFile.ByFile(res.path)
+            )
+            is DressCodeUseCase.Result.Error -> sendSafeMessage(chatId, res.msg)
+        }
+        logger.info("<<< END showDressCode")
         logger.fine("with $res")
     }
 

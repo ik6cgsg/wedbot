@@ -46,7 +46,6 @@ class HandleEventStatusUseCase(
                 Result.Edit(textRepository.eventStatusAccepted(), Status.APPROVED)
             }
             Status.SLEEVE -> {
-                // TODO: delete??
                 userRepository.update(user.copy(eventStatus = Status.SLEEVE))
                 Result.Edit(textRepository.eventStatusRejected(), Status.SLEEVE)
             }

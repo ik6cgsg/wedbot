@@ -10,6 +10,7 @@ interface UserRepository {
     
     fun getAdminChatIds(): Result<List<Long>>
     fun getAllUserChatIds(): Result<List<Long>>
+    fun getGuestsChatIds(): Result<List<Long>>
     
     fun create(newUser: UserInfo)
     fun update(user: UserInfo)

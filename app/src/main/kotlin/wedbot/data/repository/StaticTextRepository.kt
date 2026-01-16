@@ -6,6 +6,7 @@ import wedbot.domain.repository.TextRepository
 
 class StaticTextRepository : TextRepository {
     override fun internalError(): String = BotMessages.INTERNAL_ERROR
+    override fun totalSleeve(): String = BotMessages.TOTAL_SLEEVE
     // start & contact commands
     override fun generateGreeting(name: String?): String = BotMessages.GREETING
         .format(name?.let {", $it"} ?: "")
@@ -13,7 +14,7 @@ class StaticTextRepository : TextRepository {
         .plus("\n\n")
         .plus(infoMessage())
     override fun infoMessage(): String = BotMessages.INFO_MESSAGE
-        .format(BotConstants.eventStatusDeadline)
+        //.format(BotConstants.eventStatusDeadline)
         .trimIndent()
     override fun helpMessage(): String = BotMessages.HELP_MESSAGE
         .escapeMarkdown()
@@ -42,8 +43,12 @@ class StaticTextRepository : TextRepository {
     override fun calendarMessage(): String = BotMessages.CALENDAR_MESSAGE
         .trimIndent()
     override fun adminPingStarted(): String = BotMessages.ADMIN_PING_STARTED
-    override fun adminPingPrompt(): String = BotMessages.ADMIN_PING_PROMPT
+    override fun adminPingAllPrompt(): String = BotMessages.ADMIN_PING_ALL_PROMPT
         .trimIndent()
+    override fun adminPingAllButton(): String = BotMessages.ADMIN_PING_ALL_BUTTON
+    override fun adminPingGuestsPrompt(): String = BotMessages.ADMIN_PING_GUESTS_PROMPT
+        .trimIndent()
+    override fun adminPingGuestsButton(): String = BotMessages.ADMIN_PING_GUESTS_BUTTON
     override fun adminPingCancel(): String = BotMessages.ADMIN_PING_CANCEL
     override fun adminPingCancelButton(): String = BotMessages.ADMIN_PING_CANCEL_BUTTON
     override fun adminPingSucceed(): String = BotMessages.ADMIN_PING_SUCCEED
@@ -55,6 +60,7 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonHelp(): String = BotMessages.MENU_BUTTON_HELP
     override fun menuButtonStatusTable(): String = BotMessages.MENU_BUTTON_STATUS_TABLE
     override fun menuButtonPingGuests(): String = BotMessages.MENU_BUTTON_PING_GUESTS
+    override fun menuButtonDressCode(): String = BotMessages.MENU_BUTTON_DRESS_CODE
     override fun techWorks(): String = BotMessages.TECH_WORKS
 
     private fun String.escapeMarkdown(): String = this

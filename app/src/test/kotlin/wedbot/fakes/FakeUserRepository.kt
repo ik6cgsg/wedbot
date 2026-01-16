@@ -1,6 +1,7 @@
 package wedbot.fakes
 
 import wedbot.domain.entity.Role
+import wedbot.domain.entity.Status
 import wedbot.domain.entity.UserInfo
 import wedbot.domain.entity.UserStatus
 import wedbot.domain.entity.toUserStatus
@@ -35,6 +36,14 @@ class FakeUserRepository(
     override fun getAllUserChatIds(): Result<List<Long>> = runCatching {
         val res = users.mapNotNull { it.chatId }
         if (res.isEmpty()) throw Exception("No chats")
+        res
+    }
+
+    override fun getGuestsChatIds(): Result<List<Long>> = runCatching {
+        val res = users
+            .filter { it.eventStatus == Status.APPROVED }
+            .mapNotNull { it.chatId }
+        if (res.isEmpty()) throw Exception("No guests found")
         res
     }
 

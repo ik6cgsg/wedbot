@@ -16,4 +16,5 @@ object BotConstants {
     const val calendarFilePath = "res/wed2.ics"
     const val invitePhotoPath = "res/wed2.png"
     const val locationCoordinates = "59.646974, 30.516003"
+    const val dressCodeFilePath = "res/dress.png"
 }

@@ -1,9 +1,11 @@
 package wedbot.domain.usecase
 
+import wedbot.domain.entity.Status
 import wedbot.domain.policy.canChangeStatus
 import wedbot.domain.policy.canContactOrganizers
 import wedbot.domain.policy.canDownloadCalendar
 import wedbot.domain.policy.canViewAdminPanel
+import wedbot.domain.policy.canViewDressCode
 import wedbot.domain.policy.canViewInfo
 import wedbot.domain.policy.canViewLocation
 import wedbot.domain.repository.TextRepository
@@ -32,7 +34,8 @@ class MenuUseCase(
         EVENT_STATUS,
         HELP,
         STATUS_TABLE,
-        PING_GUESTS
+        PING_GUESTS,
+        DRESS_CODE
     }
 
     val buttonToLabel = mapOf(
@@ -42,7 +45,8 @@ class MenuUseCase(
         Button.EVENT_STATUS to textRepository.menuButtonEventStatus(),
         Button.HELP to textRepository.menuButtonHelp(),
         Button.STATUS_TABLE to textRepository.menuButtonStatusTable(),
-        Button.PING_GUESTS to textRepository.menuButtonPingGuests()
+        Button.PING_GUESTS to textRepository.menuButtonPingGuests(),
+        Button.DRESS_CODE to textRepository.menuButtonDressCode()
     )
 
     private val Button.label: String
@@ -55,6 +59,9 @@ class MenuUseCase(
         val keyboard = mutableListOf<List<String>>()
         if (user.canViewInfo()) {
             keyboard.add(listOf(Button.INFO.label))
+        }
+        if (user.canViewDressCode()) {
+            keyboard.add(listOf(Button.DRESS_CODE.label))
         }
         if (user.canViewAdminPanel()) {
             keyboard.add(listOf(Button.STATUS_TABLE.label))
@@ -73,15 +80,17 @@ class MenuUseCase(
         if (user.canChangeStatus()) {
             keyboard.add(listOf(Button.EVENT_STATUS.label))
         }
-        if (keyboard.isEmpty()) {
-            return Result.Error(textRepository.weakRights())
-        }
         if (user.canContactOrganizers()) {
             keyboard.add(listOf(Button.HELP.label))
         }
-        return Result.Markup(
-            textRepository.menuMessage(),
-            keyboard
-        )
+        if (keyboard.isEmpty()) {
+            return Result.Error(textRepository.weakRights())
+        }
+        val message = if (user.eventStatus == Status.SLEEVE) {
+            textRepository.totalSleeve()
+        } else {
+            textRepository.menuMessage()
+        }
+        return Result.Markup(message, keyboard)
     }
 }

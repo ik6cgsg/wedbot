@@ -21,6 +21,7 @@ import wedbot.domain.entity.Drink
 import wedbot.domain.entity.FoodInfo
 import wedbot.domain.entity.Menu
 import wedbot.domain.entity.Role
+import wedbot.domain.entity.Status
 import wedbot.domain.entity.UserInfo
 import wedbot.domain.entity.UserStatus
 
@@ -93,6 +94,13 @@ class DatabaseSqlite {
         UsersTable
             .select(UsersTable.chatId)
             .where { UsersTable.chatId neq null }
+            .map { it[UsersTable.chatId]!! }
+    }
+
+    fun getGuestsChatIds(): List<Long> = transaction {
+        UsersTable
+            .select(UsersTable.chatId)
+            .where { (UsersTable.chatId neq null) and (UsersTable.eventStatus eq Status.APPROVED) }
             .map { it[UsersTable.chatId]!! }
     }
 
