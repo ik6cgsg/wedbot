@@ -80,8 +80,24 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonPingGuests(): String = BotMessages.MENU_BUTTON_PING_GUESTS
     override fun menuButtonDressCode(): String = BotMessages.MENU_BUTTON_DRESS_CODE
     override fun menuButtonVillaStatus(): String = BotMessages.MENU_BUTTON_VILLA_STATUS
+    override fun menuButtonTransfer(): String = BotMessages.MENU_BUTTON_TRANSFER
     override fun menuHasSurveys(): String = BotMessages.MENU_HAS_SURVEYS
     override fun techWorks(): String = BotMessages.TECH_WORKS
+
+    // Transfer status implementations
+    override fun transferStatusThinkingButton(): String = BotMessages.TRANSFER_STATUS_THINKING_BUTTON
+    override fun transferStatusNeedButton(): String = BotMessages.TRANSFER_STATUS_NEED_BUTTON
+    override fun transferStatusSelfHandleButton(): String = BotMessages.TRANSFER_STATUS_SELF_HANDLE_BUTTON
+    override fun transferStatusSocialLegendButton(): String = BotMessages.TRANSFER_STATUS_SOCIAL_LEGEND_BUTTON
+    override fun transferStatusPingThinking(deadline: String): String = BotMessages.TRANSFER_STATUS_PING_THINKING
+        .format(deadline)
+        .trimIndent()
+    override fun transferStatusPingNeed(): String = BotMessages.TRANSFER_STATUS_PING_NEED
+    override fun transferStatusPingSelfHandle(): String = BotMessages.TRANSFER_STATUS_PING_SELF_HANDLE
+    override fun transferStatusPingSocialLegend(): String = BotMessages.TRANSFER_STATUS_PING_SOCIAL_LEGEND
+    override fun transferStatusNeedChoice(): String = BotMessages.TRANSFER_STATUS_NEED_CHOICE
+    override fun transferStatusSelfHandleChoice(): String = BotMessages.TRANSFER_STATUS_SELF_HANDLE_CHOICE
+    override fun transferStatusSocialLegendChoice(): String = BotMessages.TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE
 
     private fun String.escapeMarkdown(): String = this
         .replace("_", "\\_")

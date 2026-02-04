@@ -49,6 +49,18 @@ interface TextRepository {
     fun menuButtonPingGuests(): String
     fun menuButtonDressCode(): String
     fun menuButtonVillaStatus(): String
+    fun menuButtonTransfer(): String
     fun menuHasSurveys(): String
     fun techWorks(): String
+    fun transferStatusThinkingButton(): String
+    fun transferStatusNeedButton(): String
+    fun transferStatusSelfHandleButton(): String
+    fun transferStatusSocialLegendButton(): String
+    fun transferStatusPingThinking(deadline: String): String
+    fun transferStatusPingNeed(): String
+    fun transferStatusPingSelfHandle(): String
+    fun transferStatusPingSocialLegend(): String
+    fun transferStatusNeedChoice(): String
+    fun transferStatusSelfHandleChoice(): String
+    fun transferStatusSocialLegendChoice(): String
 }

@@ -2,6 +2,7 @@ package wedbot.domain.usecase
 
 import com.github.kotlintelegrambot.Bot
 import wedbot.domain.entity.Status
+import wedbot.domain.entity.TransferStatus
 import wedbot.domain.policy.canChangeStatus
 import wedbot.domain.policy.canContactOrganizers
 import wedbot.domain.policy.canDownloadCalendar
@@ -39,7 +40,8 @@ class MenuUseCase(
         STATUS_TABLE,
         PING_GUESTS,
         DRESS_CODE,
-        VILLA
+        VILLA,
+        TRANSFER
     }
 
     val buttonToLabel = mapOf(
@@ -51,7 +53,8 @@ class MenuUseCase(
         Button.STATUS_TABLE to textRepository.menuButtonStatusTable(),
         Button.PING_GUESTS to textRepository.menuButtonPingGuests(),
         Button.DRESS_CODE to textRepository.menuButtonDressCode(),
-        Button.VILLA to textRepository.menuButtonVillaStatus()
+        Button.VILLA to textRepository.menuButtonVillaStatus(),
+        Button.TRANSFER to textRepository.menuButtonTransfer()
     )
 
     private val Button.label: String
@@ -91,12 +94,13 @@ class MenuUseCase(
             keyboard.add(listOf(Button.EVENT_STATUS.label))
         }
         if (user.canViewSurveys()) {
-            // TODO: add transfer
             // TODO: add food
             // TODO: add drink
             val surveyRow = mutableListOf<String>()
             val villaLabel = Button.VILLA.label + " " + user.villaStatus.toEmoji()
             surveyRow.add(villaLabel)
+            val transferLabel = Button.TRANSFER.label + " " + user.transferStatus.toEmoji()
+            surveyRow.add(transferLabel)
             if (surveyRow.isNotEmpty()) {
                 keyboard.add(surveyRow)
             }
@@ -126,6 +130,15 @@ class MenuUseCase(
             Status.APPROVED -> "✅"
             Status.SLEEVE -> "🚫"
             Status.THINKING -> "⚠️"
+        }
+    }
+
+    private fun TransferStatus.toEmoji(): String {
+        return when (this) {
+            TransferStatus.THINKING -> "⚠️"
+            TransferStatus.SELF_HANDLE -> "✅"
+            TransferStatus.SOCIAL_LEGEND -> "🏆"
+            TransferStatus.NEED -> "🙏"
         }
     }
 }

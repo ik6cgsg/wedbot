@@ -68,6 +68,7 @@ object BotMessages {
     const val MENU_BUTTON_PING_GUESTS ="Отправить гостям сообщение"
     const val MENU_BUTTON_DRESS_CODE ="ДрессКот"
     const val MENU_BUTTON_VILLA_STATUS = "Коттедж"
+    const val MENU_BUTTON_TRANSFER = "Трансфер"
     const val MENU_HAS_SURVEYS = """
         Дорогой гость! Кажется у тебя есть непройденные опросы...
         Пж проверь в /menu кнопки помеченные ⚠️
@@ -123,4 +124,19 @@ object BotMessages {
         Жаль что у тебя не получится остаться с нами ☹️
         В любом случае можно потусить до 2 ночи, ибо дальше мы обязаны оставить оговоренное число людей в доме
     """
+    // Transfer status
+    const val TRANSFER_STATUS_PING_THINKING = """
+        Мы очень хотим понять что делать с трансфером.
+        Пожалуйста, помоги нам определиться до *%s*
+    """
+    const val TRANSFER_STATUS_PING_NEED = "Ты выбрал необходимость трансфера, а мы его обдумываем"
+    const val TRANSFER_STATUS_PING_SELF_HANDLE = "Спасибо, что сможешь добраться самостоятельно!"
+    const val TRANSFER_STATUS_PING_SOCIAL_LEGEND = "Ты просто живая легенда! Скоро обратимся к тебе с возможными попутчиками"
+    const val TRANSFER_STATUS_THINKING_BUTTON = "Пока подумаю..." 
+    const val TRANSFER_STATUS_NEED_BUTTON = "Было бы славно"
+    const val TRANSFER_STATUS_SELF_HANDLE_BUTTON = "Справлюсь сам!"
+    const val TRANSFER_STATUS_SOCIAL_LEGEND_BUTTON = "Готов даже подвезти"
+    const val TRANSFER_STATUS_NEED_CHOICE = "Отлично, пометили что трансфер нужен"
+    const val TRANSFER_STATUS_SELF_HANDLE_CHOICE = "Отлично, пометили, что ты сам доберешься"
+    const val TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE = "Спасибо огромное за помощь!"
 }

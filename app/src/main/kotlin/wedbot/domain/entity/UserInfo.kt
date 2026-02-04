@@ -8,6 +8,10 @@ enum class Status {
     APPROVED, SLEEVE, THINKING
 }
 
+enum class TransferStatus {
+    THINKING, NEED, SELF_HANDLE, SOCIAL_LEGEND
+}
+
 enum class Role {
     ADMIN, STAFF, GUEST
 }
@@ -22,7 +26,7 @@ data class UserInfo(
     val sex: Sex = Sex.NE_BYLO,
     val eventStatus: Status = Status.THINKING,
     val villaStatus: Status = Status.THINKING,
-    val needTransfer: Status = Status.THINKING,
+    val transferStatus: TransferStatus = TransferStatus.THINKING,
     val role: Role = Role.GUEST,
     val foodInfo: FoodInfo? = null
 )
@@ -34,7 +38,7 @@ fun UserInfo.toUserStatus(): UserStatus? {
         this.name,
         this.eventStatus,
         this.villaStatus,
-        this.needTransfer
+        this.transferStatus
     )
 }
 
@@ -44,5 +48,5 @@ data class UserStatus(
     val name: String?,
     val eventStatus: Status,
     val villaStatus: Status,
-    val needTransfer: Status
+    val transferStatus: TransferStatus
 )

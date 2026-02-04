@@ -1,6 +1,7 @@
 package wedbot.domain.usecase
 
 import wedbot.domain.entity.Status
+import wedbot.domain.entity.TransferStatus
 import wedbot.domain.entity.UserStatus
 import wedbot.domain.policy.canViewAdminPanel
 import wedbot.domain.repository.TextRepository
@@ -57,7 +58,7 @@ class StatusTableUseCase(
             val name = (status.name ?: "N/A").take(15).padEnd(15)
             val event = status.eventStatus.toSymbol().padEnd(5)
             val villa = status.villaStatus.toSymbol().padEnd(5)
-            val trans = status.needTransfer.toSymbol().padEnd(5)
+            val trans = status.transferStatus.toSymbol().padEnd(5)
             "|$username|$name|$event|$villa|$trans|"
         }
         return "```\n$header$separator$rows\n```"
@@ -68,6 +69,15 @@ class StatusTableUseCase(
             Status.APPROVED -> "+"
             Status.SLEEVE -> "-"
             Status.THINKING -> "?"
+        }
+    }
+
+    private fun TransferStatus.toSymbol(): String {
+        return when (this) {
+            TransferStatus.THINKING -> "?"
+            TransferStatus.NEED -> "h"
+            TransferStatus.SELF_HANDLE -> "+"
+            TransferStatus.SOCIAL_LEGEND -> "++"
         }
     }
 }

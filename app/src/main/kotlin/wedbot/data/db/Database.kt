@@ -82,7 +82,7 @@ class DatabaseSqlite {
     fun getUserStatuses(offset: Long?, limit: Int?): List<UserStatus> = transaction {
         UsersTable
             .select(UsersTable.chatId, UsersTable.username, UsersTable.name,
-                UsersTable.eventStatus, UsersTable.villaStatus, UsersTable.needTransfer
+                UsersTable.eventStatus, UsersTable.villaStatus, UsersTable.transferStatus
             )
             .where { UsersTable.chatId neq null }
             .offset(offset ?: 0)
@@ -135,7 +135,7 @@ class DatabaseSqlite {
             it[UsersTable.sex] = user.sex
             it[UsersTable.eventStatus] = user.eventStatus
             it[UsersTable.villaStatus] = user.villaStatus
-            it[UsersTable.needTransfer] = user.needTransfer
+            it[UsersTable.transferStatus] = user.transferStatus
             it[UsersTable.role] = user.role
             it[UsersTable.foodInfoId] = newFoodInfoId
         }
@@ -179,7 +179,7 @@ class DatabaseSqlite {
             it[sex] = user.sex
             it[eventStatus] = user.eventStatus
             it[villaStatus] = user.villaStatus
-            it[needTransfer] = user.needTransfer
+            it[transferStatus] = user.transferStatus
             it[role] = user.role
             it[foodInfoId] = currentFoodInfoId
         }
@@ -211,7 +211,7 @@ class DatabaseSqlite {
             this[UsersTable.sex],
             this[UsersTable.eventStatus],
             this[UsersTable.villaStatus],
-            this[UsersTable.needTransfer],
+            this[UsersTable.transferStatus],
             this[UsersTable.role],
             foodInfo
         )
@@ -223,6 +223,6 @@ class DatabaseSqlite {
         this[UsersTable.name],
         this[UsersTable.eventStatus],
         this[UsersTable.villaStatus],
-        this[UsersTable.needTransfer]
+        this[UsersTable.transferStatus]
     )
 }
