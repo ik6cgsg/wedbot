@@ -1,5 +1,6 @@
 package wedbot.domain.usecase
 
+import com.github.kotlintelegrambot.Bot
 import wedbot.domain.entity.Status
 import wedbot.domain.policy.canChangeStatus
 import wedbot.domain.policy.canContactOrganizers
@@ -8,8 +9,10 @@ import wedbot.domain.policy.canViewAdminPanel
 import wedbot.domain.policy.canViewDressCode
 import wedbot.domain.policy.canViewInfo
 import wedbot.domain.policy.canViewLocation
+import wedbot.domain.policy.canViewSurveys
 import wedbot.domain.repository.TextRepository
 import wedbot.domain.repository.UserRepository
+import wedbot.presentation.util.sendSafeMessage
 
 class MenuUseCase(
     private val userRepository: UserRepository,
@@ -35,7 +38,8 @@ class MenuUseCase(
         HELP,
         STATUS_TABLE,
         PING_GUESTS,
-        DRESS_CODE
+        DRESS_CODE,
+        VILLA
     }
 
     val buttonToLabel = mapOf(
@@ -46,7 +50,8 @@ class MenuUseCase(
         Button.HELP to textRepository.menuButtonHelp(),
         Button.STATUS_TABLE to textRepository.menuButtonStatusTable(),
         Button.PING_GUESTS to textRepository.menuButtonPingGuests(),
-        Button.DRESS_CODE to textRepository.menuButtonDressCode()
+        Button.DRESS_CODE to textRepository.menuButtonDressCode(),
+        Button.VILLA to textRepository.menuButtonVillaStatus()
     )
 
     private val Button.label: String
@@ -57,16 +62,20 @@ class MenuUseCase(
             return Result.Error(textRepository.userNotFound())
         }
         val keyboard = mutableListOf<List<String>>()
+        // Info & Dress code
+        val infoRow = mutableListOf<String>()
         if (user.canViewInfo()) {
-            keyboard.add(listOf(Button.INFO.label))
+            infoRow.add(Button.INFO.label)
+            //keyboard.add(listOf(Button.INFO.label))
         }
         if (user.canViewDressCode()) {
-            keyboard.add(listOf(Button.DRESS_CODE.label))
+            infoRow.add(Button.DRESS_CODE.label)
+            //keyboard.add(listOf(Button.DRESS_CODE.label))
         }
-        if (user.canViewAdminPanel()) {
-            keyboard.add(listOf(Button.STATUS_TABLE.label))
-            keyboard.add(listOf(Button.PING_GUESTS.label))
+        if (infoRow.isNotEmpty()) {
+            keyboard.add(infoRow)
         }
+        // Calendar & Location
         val logisticRow = mutableListOf<String>()
         if (user.canDownloadCalendar()) {
             logisticRow.add(Button.ICS.label)
@@ -77,9 +86,27 @@ class MenuUseCase(
         if (logisticRow.isNotEmpty()) {
             keyboard.add(logisticRow)
         }
+        // Surveys
         if (user.canChangeStatus()) {
             keyboard.add(listOf(Button.EVENT_STATUS.label))
         }
+        if (user.canViewSurveys()) {
+            // TODO: add transfer
+            // TODO: add food
+            // TODO: add drink
+            val surveyRow = mutableListOf<String>()
+            val villaLabel = Button.VILLA.label + " " + user.villaStatus.toEmoji()
+            surveyRow.add(villaLabel)
+            if (surveyRow.isNotEmpty()) {
+                keyboard.add(surveyRow)
+            }
+        }
+        // ADMIN
+        if (user.canViewAdminPanel()) {
+            keyboard.add(listOf(Button.STATUS_TABLE.label))
+            keyboard.add(listOf(Button.PING_GUESTS.label))
+        }
+        // OTHER
         if (user.canContactOrganizers()) {
             keyboard.add(listOf(Button.HELP.label))
         }
@@ -92,5 +119,13 @@ class MenuUseCase(
             textRepository.menuMessage()
         }
         return Result.Markup(message, keyboard)
+    }
+
+    private fun Status.toEmoji(): String {
+        return when (this) {
+            Status.APPROVED -> "✅"
+            Status.SLEEVE -> "🚫"
+            Status.THINKING -> "⚠️"
+        }
     }
 }

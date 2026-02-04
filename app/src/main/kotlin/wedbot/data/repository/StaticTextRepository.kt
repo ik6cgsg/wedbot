@@ -3,6 +3,7 @@ package wedbot.data.repository
 import wedbot.BotConstants
 import wedbot.data.resources.BotMessages
 import wedbot.domain.repository.TextRepository
+import kotlin.text.format
 
 class StaticTextRepository : TextRepository {
     override fun internalError(): String = BotMessages.INTERNAL_ERROR
@@ -37,6 +38,23 @@ class StaticTextRepository : TextRepository {
     override fun eventStatusThinkAgain(): String = BotMessages.EVENT_STATUS_THINK_AGAIN
         .format(BotConstants.eventStatusDeadline)
         .trimIndent()
+    override fun statusThinkAgain(deadline: String): String = BotMessages.STATUS_THINK_AGAIN
+        .format(deadline)
+        .trimIndent()
+    override fun villaStatusPingApproved(): String = BotMessages.VILLA_STATUS_PING_APPROVED
+        .trimIndent()
+    override fun villaStatusPingRejected(): String = BotMessages.VILLA_STATUS_PING_REJECTED
+        .trimIndent()
+    override fun villaStatusPingThinking(deadline: String): String = BotMessages.VILLA_STATUS_PING_THINKING
+        .format(deadline)
+        .trimIndent()
+    override fun villaStatusAcceptButton(): String = BotMessages.VILLA_STATUS_ACCEPT_BUTTON
+    override fun villaStatusRejectButton(): String = BotMessages.VILLA_STATUS_REJECT_BUTTON
+    override fun villaStatusThinkButton(): String = BotMessages.VILLA_STATUS_THINK_BUTTON
+    override fun villaStatusAccepted(): String = BotMessages.VILLA_STATUS_ACCEPTED
+        .trimIndent()
+    override fun villaStatusRejected(): String = BotMessages.VILLA_STATUS_REJECTED
+        .trimIndent()
     override fun menuMessage(): String = BotMessages.MENU_MESSAGE
         .trimIndent()
     override fun menuUpdated(): String = BotMessages.MENU_UPDATED
@@ -61,6 +79,8 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonStatusTable(): String = BotMessages.MENU_BUTTON_STATUS_TABLE
     override fun menuButtonPingGuests(): String = BotMessages.MENU_BUTTON_PING_GUESTS
     override fun menuButtonDressCode(): String = BotMessages.MENU_BUTTON_DRESS_CODE
+    override fun menuButtonVillaStatus(): String = BotMessages.MENU_BUTTON_VILLA_STATUS
+    override fun menuHasSurveys(): String = BotMessages.MENU_HAS_SURVEYS
     override fun techWorks(): String = BotMessages.TECH_WORKS
 
     private fun String.escapeMarkdown(): String = this

@@ -19,6 +19,15 @@ interface TextRepository {
     fun eventStatusAccepted(): String
     fun eventStatusRejected(): String
     fun eventStatusThinkAgain(): String
+    fun statusThinkAgain(deadline: String): String
+    fun villaStatusPingApproved(): String
+    fun villaStatusPingRejected(): String
+    fun villaStatusPingThinking(deadline: String): String
+    fun villaStatusAcceptButton(): String
+    fun villaStatusRejectButton(): String
+    fun villaStatusThinkButton(): String
+    fun villaStatusAccepted(): String
+    fun villaStatusRejected(): String
     fun menuMessage(): String
     fun menuUpdated(): String
     fun calendarMessage(): String
@@ -39,5 +48,7 @@ interface TextRepository {
     fun menuButtonStatusTable(): String
     fun menuButtonPingGuests(): String
     fun menuButtonDressCode(): String
+    fun menuButtonVillaStatus(): String
+    fun menuHasSurveys(): String
     fun techWorks(): String
 }

@@ -10,6 +10,7 @@ import wedbot.domain.usecase.CalendarUseCase
 import wedbot.domain.usecase.DressCodeUseCase
 import wedbot.domain.usecase.EasterUseCase
 import wedbot.domain.usecase.HandleEventStatusUseCase
+import wedbot.domain.usecase.HandleVillaStatusUseCase
 import wedbot.domain.usecase.InfoUseCase
 import wedbot.domain.usecase.LocationUseCase
 import wedbot.domain.usecase.MenuUseCase
@@ -26,6 +27,7 @@ import wedbot.presentation.dispatcher.MenuDispatcher
 import wedbot.presentation.dispatcher.MenuEventInterface
 import wedbot.presentation.dispatcher.PingDispatcher
 import wedbot.presentation.dispatcher.StatusTableDispatcher
+import wedbot.presentation.dispatcher.VillaStatusDispatcher
 import wedbot.presentation.server.Server
 
 fun main() {
@@ -42,6 +44,7 @@ class Application: NotificationListener {
     val startUseCase = StartUseCase(userRepository, textRepository)
     val verifyPhoneUseCase = VerifyPhoneUseCase(userRepository, textRepository)
     val handleEventStatusUseCase = HandleEventStatusUseCase(userRepository, textRepository)
+    val handleVillaStatusUseCase = HandleVillaStatusUseCase(userRepository, textRepository)
     val menuUseCase = MenuUseCase(userRepository, textRepository)
     val calendarUseCase = CalendarUseCase(userRepository, textRepository)
     val locationUseCase = LocationUseCase(userRepository, textRepository)
@@ -55,6 +58,7 @@ class Application: NotificationListener {
     // Dispatchers
     val authDispatcher: AuthDispatcher
     val eventStatusDispatcher: EventStatusDispatcher
+    val villaStatusDispatcher: VillaStatusDispatcher
     val menuDispatcher: MenuDispatcher
     val statusTableDispatcher: StatusTableDispatcher
     val pingDispatcher: PingDispatcher
@@ -69,6 +73,7 @@ class Application: NotificationListener {
             eventStatusDispatcher.pingEventStatusFirst(bot, id)
         }
         eventStatusDispatcher = EventStatusDispatcher(textRepository, handleEventStatusUseCase)
+        villaStatusDispatcher = VillaStatusDispatcher(textRepository, handleVillaStatusUseCase)
         menuDispatcher = MenuDispatcher(
             textRepository, menuUseCase, infoUseCase, dressCodeUseCase, calendarUseCase, locationUseCase,
             object : MenuEventInterface {
@@ -87,6 +92,10 @@ class Application: NotificationListener {
                 override fun startPingGuestsFlow(bot: Bot, chatId: Long) {
                     pingDispatcher.startPingGuestsFlow(bot, chatId)
                 }
+
+                override fun pingVillaStatus(bot: Bot, chatId: Long) {
+                    villaStatusDispatcher.pingVillaStatus(bot, chatId)
+                }
             }
         )
         statusTableDispatcher = StatusTableDispatcher(statusTableUseCase)
@@ -101,7 +110,8 @@ class Application: NotificationListener {
             statusTableDispatcher,
             pingDispatcher,
             easterDispatcher,
-            dummyDispatcher
+            dummyDispatcher,
+            villaStatusDispatcher
         )
     }
 
@@ -118,5 +128,9 @@ class Application: NotificationListener {
 
     override fun stillThinkingAboutEvent(chatId: Long, name: String?) {
         wedbot.pingEventStatus(chatId, name)
+    }
+
+    override fun hasIdleSurveys(chatId: Long) {
+        wedbot.pingSurveys(chatId)
     }
 }

@@ -16,6 +16,7 @@ import wedbot.presentation.dispatcher.EventStatusDispatcher
 import wedbot.presentation.dispatcher.MenuDispatcher
 import wedbot.presentation.dispatcher.PingDispatcher
 import wedbot.presentation.dispatcher.StatusTableDispatcher
+import wedbot.presentation.dispatcher.VillaStatusDispatcher
 import wedbot.presentation.server.CertificateUtils
 import java.util.logging.ConsoleHandler
 import java.util.logging.Level
@@ -29,7 +30,8 @@ class WedBot(
     private val statusTableDispatcher: StatusTableDispatcher,
     private val pingDispatcher: PingDispatcher,
     private val easterDispatcher: EasterDispatcher,
-    private val dummyDispatcher: DummyDispatcher
+    private val dummyDispatcher: DummyDispatcher,
+    private val villaStatusDispatcher: VillaStatusDispatcher
 ) {
     private val bot: Bot
     private val logger = Logger.getLogger(this::class.java.name)
@@ -65,6 +67,7 @@ class WedBot(
             pingDispatcher.setup(this)
             authDispatcher.setup(this)
             eventStatusDispatcher.setup(this)
+            villaStatusDispatcher.setup(this)
             menuDispatcher.setup(this)
             statusTableDispatcher.setup(this)
             easterDispatcher.setup(this)
@@ -89,5 +92,9 @@ class WedBot(
 
     fun pingEventStatus(chatId: Long, name: String?) {
         eventStatusDispatcher.pingEventStatus(bot, chatId, name)
+    }
+
+    fun pingSurveys(chatId: Long) {
+        menuDispatcher.pingSurveys(bot, chatId)
     }
 }

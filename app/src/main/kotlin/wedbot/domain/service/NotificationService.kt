@@ -21,6 +21,7 @@ import java.util.logging.Logger
 
 interface NotificationListener {
     fun stillThinkingAboutEvent(chatId: Long, name: String?)
+    fun hasIdleSurveys(chatId: Long)
 }
 
 class NotificationService(
@@ -31,8 +32,8 @@ class NotificationService(
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val zone = ZoneId.of("Europe/Moscow")
-    val deadline = LocalDate
-        .parse(BotConstants.eventStatusDeadline, formatter)
+    val weddingDeadline = LocalDate
+        .parse(BotConstants.weddingDeadline, formatter)
         .plusDays(1)
         .atStartOfDay(zone)
 
@@ -41,12 +42,12 @@ class NotificationService(
         if (SystemProperties.dummy) return
         scope.launch {
             while (isActive) {
-                if (ZonedDateTime.now(zone).isAfter(deadline)) {
+                if (ZonedDateTime.now(zone).isAfter(weddingDeadline)) {
                     logger.warning("Notification deadline has passed. Stopping daily reminders...")
                     return@launch
                 }
                 var targetMskTime: ZonedDateTime = LocalDate.now(zone)
-                    .atTime(LocalTime.of(11, 0))
+                    .atTime(LocalTime.of(18, 30))
                     .atZone(zone)
                 val now = ZonedDateTime.now(zone)
                 if (now.isAfter(targetMskTime)) {
@@ -67,11 +68,35 @@ class NotificationService(
     private fun processDailyReminders() {
         logger.info("Processing daily reminders...")
         val userStatuses = userRepository.getStatuses(null, null)
-        val eventThinkingUsers = userStatuses.filter { it.eventStatus == Status.THINKING }
-        logger.info("Found ${eventThinkingUsers.size} users with 'THINKING' status for event. Sending notifications...")
-        eventThinkingUsers.forEach { user ->
-            listener.stillThinkingAboutEvent(user.chatId, user.name)
+        if (BotConstants.eventStatusDeadline.isDatePassedAlready()) {
+            logger.info("eventStatusDeadline has passed, ingoring...")
+        } else {
+            val eventThinkingUsers = userStatuses.filter { it.eventStatus == Status.THINKING }
+            logger.info("Found ${eventThinkingUsers.size} users with 'THINKING' status for event. Sending notifications...")
+            eventThinkingUsers.forEach { user ->
+                listener.stillThinkingAboutEvent(user.chatId, user.name)
+            }
+        }
+        if (BotConstants.villaStatusDeadline.isDatePassedAlready()) {
+            logger.info("villaStatusDeadline has passed, ingoring...")
+        } else {
+            val surveysThinkingUsers = userStatuses.filter {
+                it.eventStatus == Status.APPROVED &&
+                        (it.villaStatus == Status.THINKING)// TODO: || it.needTransfer == Status.THINKING)
+            }
+            surveysThinkingUsers.forEach { user ->
+                listener.hasIdleSurveys(user.chatId)
+            }
         }
         logger.info("Finished processing daily reminders.")
+    }
+
+    private fun String.isDatePassedAlready(): Boolean = try {
+        val curDate = LocalDate
+            .parse(this, formatter)
+            .atStartOfDay(zone)
+       ZonedDateTime.now(zone).isAfter(curDate)
+    } catch(_: Throwable) {
+        false
     }
 }

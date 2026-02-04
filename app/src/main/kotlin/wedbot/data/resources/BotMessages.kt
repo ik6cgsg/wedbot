@@ -49,13 +49,17 @@ object BotMessages {
         Большая просьба определиться до %s!
         Напомним завтра или ты можешь обновить статус через /menu
     """
+    const val STATUS_THINK_AGAIN = """
+        Большая просьба определиться до *%s*!
+        Напомним завтра или можешь пройти опрос в /menu
+    """
     // Menu
     const val MENU_MESSAGE = """
         Рядом с клавиатурой появилось меню. 
         Там можно найти дополнительную информацию о мероприятии.
     """
-    const val MENU_UPDATED = "Меню обновлено! Не забудь заглянуть 😉"
-    const val MENU_BUTTON_INFO = "Информация о празднике"
+    const val MENU_UPDATED = "_Меню обновлено! Не забудь заглянуть 😉_"
+    const val MENU_BUTTON_INFO = "Общая информация"
     const val MENU_BUTTON_ICS = "Календарик"
     const val MENU_BUTTON_LOCATION = "Геометка"
     const val MENU_BUTTON_EVENT_STATUS = "Установить статус посещения мероприятия"
@@ -63,6 +67,11 @@ object BotMessages {
     const val MENU_BUTTON_STATUS_TABLE = "Таблица со статусами"
     const val MENU_BUTTON_PING_GUESTS ="Отправить гостям сообщение"
     const val MENU_BUTTON_DRESS_CODE ="ДрессКот"
+    const val MENU_BUTTON_VILLA_STATUS = "Коттедж"
+    const val MENU_HAS_SURVEYS = """
+        Дорогой гость! Кажется у тебя есть непройденные опросы...
+        Пж проверь в /menu кнопки помеченные ⚠️
+    """
     const val CALENDAR_MESSAGE = """
         Теперь ты можешь сохранить этот файлик себе в календарь!
         
@@ -89,4 +98,29 @@ object BotMessages {
     const val ADMIN_PING_SUCCEED = "Рассылка успешно завершена"
     const val ADMIN_MSG_HEADER = "⚠️Сообщение от администрации ⚠️"
     const val TECH_WORKS = "🛠️ Извини, я пока не работаю... (ведутся технические работы) ((добавляются новые баги)) 🛠️"
+    // Villa status
+    const val VILLA_STATUS_PING_APPROVED = """
+        Здорово, что ты с нами до конца!
+        Вся информация о коттедже [здесь](https://vk.com/album-88705863_217214900)
+    """
+    const val VILLA_STATUS_PING_REJECTED = """
+        Жаль, что у тебя не получится. Но ты все равно сможешь посидеть с нами до 02:00 ночи.
+        Если ты вдруг передумал, обратись к админам!
+    """
+    const val VILLA_STATUS_PING_THINKING = """
+        Ты попал в число избранных, которых мы мечатем увидеть с нами в коттедже!
+        Уточни пожалуйста сможешь/хочешь ли ты остаться на ночь?
+        Просьба определиться до *%s*
+    """
+    const val VILLA_STATUS_ACCEPT_BUTTON = "Хочу и могу!!"
+    const val VILLA_STATUS_REJECT_BUTTON = "Не получится (("
+    const val VILLA_STATUS_THINK_BUTTON = "Пока подумаю..."
+    const val VILLA_STATUS_ACCEPTED = """
+        Ура! Королевской ночи быть 🙏
+        В меню пометили опрос пройденным, но не стесняйся тыкать на него еще раз для повторной подробной информации
+    """
+    const val VILLA_STATUS_REJECTED = """
+        Жаль что у тебя не получится остаться с нами ☹️
+        В любом случае можно потусить до 2 ночи, ибо дальше мы обязаны оставить оговоренное число людей в доме
+    """
 }

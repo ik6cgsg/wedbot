@@ -20,6 +20,10 @@ fun UserInfo.canViewLocation(): Boolean {
     return (role == Role.GUEST && eventStatus == Status.APPROVED) || role == Role.ADMIN
 }
 
+fun UserInfo.canViewSurveys(): Boolean {
+    return (role == Role.GUEST && eventStatus == Status.APPROVED) || role == Role.ADMIN
+}
+
 fun UserInfo.canChangeStatus(): Boolean {
     return role == Role.GUEST && eventStatus == Status.THINKING
 }

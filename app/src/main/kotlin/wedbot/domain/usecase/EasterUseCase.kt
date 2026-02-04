@@ -5,17 +5,24 @@ import java.io.File
 class EasterUseCase {
     sealed class Result {
         data class Document(val file: File) : Result()
+        data class Text(val msg: String) : Result()
         object Dice : Result()
         object Unknown : Result()
     }
 
     private val depList = listOf("dep", "дэп", "деп")
     private val swagList = listOf("swag", "свег", "свэг", "swaga", "свага")
+    private val pepeList = listOf("пэпэ", "ватафа", "шнейне", "фа", "кхекхе", "втфа")
 
     operator fun invoke(text: String): Result {
         return when (text.lowercase()) {
             in depList -> Result.Dice
             in swagList -> Result.Document(File("res/swaga.jpg"))
+            in pepeList -> {
+                val wtfa = kotlin.random.Random.nextInt(1, 10)
+                val sheyne = List(wtfa) { pepeList.random() }
+                Result.Text(sheyne.joinToString(" "))
+            }
             else -> Result.Unknown
         }
     }

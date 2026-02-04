@@ -6,6 +6,7 @@ import com.github.kotlintelegrambot.entities.ChatId
 import com.github.kotlintelegrambot.entities.TelegramFile
 import com.github.kotlintelegrambot.entities.dice.DiceEmoji
 import wedbot.domain.usecase.EasterUseCase
+import wedbot.presentation.util.sendSafeMessage
 import java.util.logging.Logger
 
 class EasterDispatcher(
@@ -23,6 +24,7 @@ class EasterDispatcher(
                 when (res) {
                     is EasterUseCase.Result.Document -> bot.sendPhoto(chatId, TelegramFile.ByFile(res.file))
                     is EasterUseCase.Result.Dice -> bot.sendDice(chatId, DiceEmoji.SlotMachine)
+                    is EasterUseCase.Result.Text -> bot.sendSafeMessage(message.chat.id, res.msg)
                     else -> {}
                 }
                 logger.info("<<< END easterDispatcher found for ${message.chat.id}")

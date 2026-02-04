@@ -21,6 +21,7 @@ interface MenuEventInterface {
     fun pingEventStatusFirst(bot: Bot, chatId: Long)
     fun showStatusTable(bot: Bot, chatId: Long)
     fun startPingGuestsFlow(bot: Bot, chatId: Long)
+    fun pingVillaStatus(bot: Bot, chatId: Long)
 }
 
 class MenuDispatcher(
@@ -63,11 +64,16 @@ class MenuDispatcher(
                         MenuUseCase.Button.HELP -> bot.sendSafeMessage(chatId, textRepository.helpMessage())
                         MenuUseCase.Button.STATUS_TABLE -> menuEventHandler.showStatusTable(bot, chatId)
                         MenuUseCase.Button.PING_GUESTS -> menuEventHandler.startPingGuestsFlow(bot, chatId)
+                        MenuUseCase.Button.VILLA -> menuEventHandler.pingVillaStatus(bot, chatId)
                     }
                     logger.info("<<< END menuDispatcher(${label})")
                 }
             }
         }
+    }
+
+    fun pingSurveys(bot: Bot, chatId: Long) {
+        bot.sendSafeMessage(chatId, textRepository.menuHasSurveys())
     }
 
     private fun Bot.showInfo(chatId: Long) {
