@@ -70,9 +70,10 @@ object BotMessages {
     const val MENU_BUTTON_VILLA_STATUS = "Коттедж"
     const val MENU_BUTTON_TRANSFER = "Трансфер"
     const val MENU_HAS_SURVEYS = """
-        Дорогой гость! Кажется у тебя есть непройденные опросы...
-        Пж проверь в /menu кнопки помеченные ⚠️
+        Дорогой гость! Кажется, у тебя есть непройденные опросы...
+        Пожалуйста, проверь в /menu кнопки, помеченные знаком ⚠️
     """
+    const val MENU_SURVEYS_DOUBLE_CLICK = "_p.s. все пройденные опросы сохраняются в меню и повторное нажатие отображает дополнительную/сохранённую информацию об опросе_"
     const val CALENDAR_MESSAGE = """
         Теперь ты можешь сохранить этот файлик себе в календарь!
         
@@ -105,38 +106,38 @@ object BotMessages {
         Вся информация о коттедже [здесь](https://vk.com/album-88705863_217214900)
     """
     const val VILLA_STATUS_PING_REJECTED = """
-        Жаль, что у тебя не получится. Но ты все равно сможешь посидеть с нами до 02:00 ночи.
+        Жаль, что у тебя не получится...
+        Ты все равно сможешь посидеть с нами до 02:00 ночи (далее ворота на территорию закрываются до утра).
+        
         Если ты вдруг передумал, обратись к админам!
     """
     const val VILLA_STATUS_PING_THINKING = """
-        Ты попал в число избранных, которых мы мечатем увидеть с нами в коттедже!
-        Уточни пожалуйста сможешь/хочешь ли ты остаться на ночь?
+        Если ты читаешь это сообщение, значит ты попал в список людей, которых мы мечтаем увидеть в коттедже после банкета!
+        Хочешь ли ты остаться на ночь?
+        *Важно*: расположение по комнатам по *три* человека
+        Подробнее про условия можно посмотреть [здесь](https://vk.com/album-88705863_217214900)
         Просьба определиться до *%s*
     """
     const val VILLA_STATUS_ACCEPT_BUTTON = "Хочу и могу!!"
     const val VILLA_STATUS_REJECT_BUTTON = "Не получится (("
     const val VILLA_STATUS_THINK_BUTTON = "Пока подумаю..."
-    const val VILLA_STATUS_ACCEPTED = """
-        Ура! Королевской ночи быть 🙏
-        В меню пометили опрос пройденным, но не стесняйся тыкать на него еще раз для повторной подробной информации
-    """
-    const val VILLA_STATUS_REJECTED = """
-        Жаль что у тебя не получится остаться с нами ☹️
-        В любом случае можно потусить до 2 ночи, ибо дальше мы обязаны оставить оговоренное число людей в доме
-    """
+    const val VILLA_STATUS_ACCEPTED = "Ура!!! Королевской ночи быть 🙏"
+    const val VILLA_STATUS_REJECTED = "Жаль, что у тебя не получится остаться с нами ☹️"
     // Transfer status
     const val TRANSFER_STATUS_PING_THINKING = """
-        Мы очень хотим понять что делать с трансфером.
-        Пожалуйста, помоги нам определиться до *%s*
+        Мы очень хотим понять, насколько нужен гостям трансфер.
+        Площадка располагает вместительной охраняемой парковкой до 30 авто!
+        Пожалуйста, подскажи твой вайб относительно трансфера с учётом коттеджа.
+        Просьба определиться до *%s*
     """
-    const val TRANSFER_STATUS_PING_NEED = "Ты выбрал необходимость трансфера, а мы его обдумываем"
+    const val TRANSFER_STATUS_PING_NEED = "Ты указал, что тебе нужен трансфер. Мы в процессе организации"
     const val TRANSFER_STATUS_PING_SELF_HANDLE = "Спасибо, что сможешь добраться самостоятельно!"
     const val TRANSFER_STATUS_PING_SOCIAL_LEGEND = "Ты просто живая легенда! Скоро обратимся к тебе с возможными попутчиками"
     const val TRANSFER_STATUS_THINKING_BUTTON = "Пока подумаю..." 
-    const val TRANSFER_STATUS_NEED_BUTTON = "Было бы славно"
-    const val TRANSFER_STATUS_SELF_HANDLE_BUTTON = "Справлюсь сам!"
-    const val TRANSFER_STATUS_SOCIAL_LEGEND_BUTTON = "Готов даже подвезти"
-    const val TRANSFER_STATUS_NEED_CHOICE = "Отлично, пометили что трансфер нужен"
-    const val TRANSFER_STATUS_SELF_HANDLE_CHOICE = "Отлично, пометили, что ты сам доберешься"
-    const val TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE = "Спасибо огромное за помощь!"
+    const val TRANSFER_STATUS_NEED_BUTTON = "Хочется телепортации"
+    const val TRANSFER_STATUS_SELF_HANDLE_BUTTON = "Спасибо, доберусь сам"
+    const val TRANSFER_STATUS_SOCIAL_LEGEND_BUTTON = "Доеду сам и готов подвезти"
+    const val TRANSFER_STATUS_NEED_CHOICE = "Спасибо за ответ! Отметим, что необходим трансфер"
+    const val TRANSFER_STATUS_SELF_HANDLE_CHOICE = "Спасибо за ответ! Отметим, что доберешься самостоятельно"
+    const val TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE = "Спасибо за ответ! И большой респект за помощь!"
 }

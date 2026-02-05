@@ -1,7 +1,6 @@
 package wedbot.data.db.table
 
 import org.jetbrains.exposed.sql.Table
-import wedbot.domain.entity.FoodInfo
 import wedbot.domain.entity.Role
 import wedbot.domain.entity.Sex
 import wedbot.domain.entity.Status

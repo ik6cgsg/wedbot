@@ -51,6 +51,7 @@ interface TextRepository {
     fun menuButtonVillaStatus(): String
     fun menuButtonTransfer(): String
     fun menuHasSurveys(): String
+    fun menuSurveysDoubleClick(): String
     fun techWorks(): String
     fun transferStatusThinkingButton(): String
     fun transferStatusNeedButton(): String

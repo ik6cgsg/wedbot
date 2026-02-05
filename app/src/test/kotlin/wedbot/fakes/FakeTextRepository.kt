@@ -44,6 +44,7 @@ class FakeTextRepository : TextRepository {
     override fun menuButtonVillaStatus(): String = "menuButtonVillaStatus"
     override fun menuButtonTransfer(): String = "menuButtonTransfer"
     override fun menuHasSurveys(): String = "menuHasSurveys"
+    override fun menuSurveysDoubleClick(): String = "menuSurveysDoubleClick"
     override fun statusThinkAgain(deadline: String): String = "statusThinkAgain"
     override fun villaStatusPingApproved(): String = "villaStatusPingApproved"
     override fun villaStatusPingRejected(): String = "villaStatusPingRejected"

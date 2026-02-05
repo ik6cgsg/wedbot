@@ -42,7 +42,7 @@ class TransferStatusDispatcher(
                                 messageId = callbackQuery.message?.messageId,
                                 text = res.text
                             )
-                            bot.sendSafeMessage(chatId, textRepository.menuUpdated())
+                            bot.sendSafeMessage(chatId, textRepository.menuSurveysDoubleClick())
                         }
                         is HandleTransferStatusUseCase.Result.Error -> {
                             bot.answerCallbackQuery(

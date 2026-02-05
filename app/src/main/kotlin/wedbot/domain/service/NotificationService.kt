@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import wedbot.BotConstants
 import wedbot.SystemProperties
 import wedbot.domain.entity.Status
+import wedbot.domain.entity.TransferStatus
 import wedbot.domain.repository.UserRepository
 import java.time.LocalDate
 import java.time.LocalTime
@@ -47,7 +48,7 @@ class NotificationService(
                     return@launch
                 }
                 var targetMskTime: ZonedDateTime = LocalDate.now(zone)
-                    .atTime(LocalTime.of(18, 30))
+                    .atTime(LocalTime.of(10, 0))
                     .atZone(zone)
                 val now = ZonedDateTime.now(zone)
                 if (now.isAfter(targetMskTime)) {
@@ -81,8 +82,7 @@ class NotificationService(
             logger.info("villaStatusDeadline has passed, ingoring...")
         } else {
             val surveysThinkingUsers = userStatuses.filter {
-                it.eventStatus == Status.APPROVED &&
-                        (it.villaStatus == Status.THINKING)// TODO: || it.needTransfer == Status.THINKING)
+                it.eventStatus == Status.APPROVED && (it.villaStatus == Status.THINKING || it.transferStatus == TransferStatus.THINKING)
             }
             surveysThinkingUsers.forEach { user ->
                 listener.hasIdleSurveys(user.chatId)

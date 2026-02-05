@@ -120,7 +120,8 @@ class Application: NotificationListener {
             pingDispatcher,
             easterDispatcher,
             dummyDispatcher,
-            villaStatusDispatcher
+            villaStatusDispatcher,
+            transferStatusDispatcher
         )
     }
 

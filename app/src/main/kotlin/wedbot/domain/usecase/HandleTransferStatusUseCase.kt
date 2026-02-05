@@ -1,7 +1,6 @@
 package wedbot.domain.usecase
 
 import wedbot.BotConstants
-import wedbot.domain.entity.Status
 import wedbot.domain.entity.TransferStatus
 import wedbot.domain.repository.TextRepository
 import wedbot.domain.repository.UserRepository

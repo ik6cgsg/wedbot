@@ -42,7 +42,7 @@ class VillaStatusDispatcher(
                                 messageId = callbackQuery.message?.messageId,
                                 text = res.text
                             )
-                            bot.sendSafeMessage(chatId, textRepository.menuUpdated())
+                            bot.sendSafeMessage(chatId, textRepository.menuSurveysDoubleClick())
                         }
                         is HandleVillaStatusUseCase.Result.Error -> {
                             bot.answerCallbackQuery(

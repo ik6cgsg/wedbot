@@ -3,7 +3,6 @@ package wedbot.data.repository
 import wedbot.BotConstants
 import wedbot.data.resources.BotMessages
 import wedbot.domain.repository.TextRepository
-import kotlin.text.format
 
 class StaticTextRepository : TextRepository {
     override fun internalError(): String = BotMessages.INTERNAL_ERROR
@@ -82,6 +81,10 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonVillaStatus(): String = BotMessages.MENU_BUTTON_VILLA_STATUS
     override fun menuButtonTransfer(): String = BotMessages.MENU_BUTTON_TRANSFER
     override fun menuHasSurveys(): String = BotMessages.MENU_HAS_SURVEYS
+        .trimIndent()
+    override fun menuSurveysDoubleClick(): String = BotMessages.MENU_SURVEYS_DOUBLE_CLICK
+        .trimIndent()
+
     override fun techWorks(): String = BotMessages.TECH_WORKS
 
     // Transfer status implementations
