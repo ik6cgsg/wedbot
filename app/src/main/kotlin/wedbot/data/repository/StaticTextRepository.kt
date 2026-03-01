@@ -80,6 +80,7 @@ class StaticTextRepository : TextRepository {
     override fun menuButtonDressCode(): String = BotMessages.MENU_BUTTON_DRESS_CODE
     override fun menuButtonVillaStatus(): String = BotMessages.MENU_BUTTON_VILLA_STATUS
     override fun menuButtonTransfer(): String = BotMessages.MENU_BUTTON_TRANSFER
+    override fun menuButtonFood(): String = BotMessages.MENU_BUTTON_FOOD
     override fun menuHasSurveys(): String = BotMessages.MENU_HAS_SURVEYS
         .trimIndent()
     override fun menuSurveysDoubleClick(): String = BotMessages.MENU_SURVEYS_DOUBLE_CLICK
@@ -101,6 +102,26 @@ class StaticTextRepository : TextRepository {
     override fun transferStatusNeedChoice(): String = BotMessages.TRANSFER_STATUS_NEED_CHOICE
     override fun transferStatusSelfHandleChoice(): String = BotMessages.TRANSFER_STATUS_SELF_HANDLE_CHOICE
     override fun transferStatusSocialLegendChoice(): String = BotMessages.TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE
+
+    // Food & Drink survey
+    override fun foodSurveyMenuPrompt(): String = BotMessages.FOOD_SURVEY_MENU_PROMPT
+    override fun foodSurveyDrinkPrompt(): String = BotMessages.FOOD_SURVEY_DRINK_PROMPT
+    override fun foodSurveyDrinkPromptAtLeastSingle(): String = BotMessages.FOOD_SURVEY_DRINK_PROMPT_AT_LEAST_SINGLE
+    override fun foodSurveyAdditionalPrompt(): String = BotMessages.FOOD_SURVEY_ADDITIONAL_PROMPT
+    override fun foodSurveyMenuHroohroo(): String = BotMessages.FOOD_SURVEY_MENU_HROOHROO
+    override fun foodSurveyMenuReebok(): String = BotMessages.FOOD_SURVEY_MENU_REEBOK
+    override fun foodSurveyMenuVegi(): String = BotMessages.FOOD_SURVEY_MENU_VEGI
+    override fun foodSurveyDrinkWhite(): String = BotMessages.FOOD_SURVEY_DRINK_WHITE
+    override fun foodSurveyDrinkRed(): String = BotMessages.FOOD_SURVEY_DRINK_RED
+    override fun foodSurveyDrinkShampoo(): String = BotMessages.FOOD_SURVEY_DRINK_SHAMPOO
+    override fun foodSurveyDrinkWhiskey(): String = BotMessages.FOOD_SURVEY_DRINK_WHISKEY
+    override fun foodSurveyDrinkVodka(): String = BotMessages.FOOD_SURVEY_DRINK_VODKA
+    override fun foodSurveyDrinkAlcoholess(): String = BotMessages.FOOD_SURVEY_DRINK_ALCOHOLESS
+    override fun foodSurveyDrinkDoneButton(): String = BotMessages.FOOD_SURVEY_DRINK_DONE_BUTTON
+    override fun foodSurveySkipAdditional(): String = BotMessages.FOOD_SURVEY_SKIP_ADDITIONAL
+    override fun foodSurveyFinished(): String = BotMessages.FOOD_SURVEY_FINISHED
+    override fun foodSurveySummary(menu: String, drinks: String, additional: String): String = 
+        BotMessages.FOOD_SURVEY_SUMMARY.format(menu, drinks, additional).trimIndent()
 
     private fun String.escapeMarkdown(): String = this
         .replace("_", "\\_")

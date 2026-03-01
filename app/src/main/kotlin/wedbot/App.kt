@@ -10,6 +10,7 @@ import wedbot.domain.usecase.CalendarUseCase
 import wedbot.domain.usecase.DressCodeUseCase
 import wedbot.domain.usecase.EasterUseCase
 import wedbot.domain.usecase.HandleEventStatusUseCase
+import wedbot.domain.usecase.HandleFoodUseCase
 import wedbot.domain.usecase.HandleVillaStatusUseCase
 import wedbot.domain.usecase.HandleTransferStatusUseCase
 import wedbot.domain.usecase.InfoUseCase
@@ -24,6 +25,7 @@ import wedbot.presentation.dispatcher.AuthDispatcher
 import wedbot.presentation.dispatcher.DummyDispatcher
 import wedbot.presentation.dispatcher.EasterDispatcher
 import wedbot.presentation.dispatcher.EventStatusDispatcher
+import wedbot.presentation.dispatcher.FoodDispatcher
 import wedbot.presentation.dispatcher.MenuDispatcher
 import wedbot.presentation.dispatcher.MenuEventInterface
 import wedbot.presentation.dispatcher.PingDispatcher
@@ -48,6 +50,7 @@ class Application: NotificationListener {
     val handleEventStatusUseCase = HandleEventStatusUseCase(userRepository, textRepository)
     val handleVillaStatusUseCase = HandleVillaStatusUseCase(userRepository, textRepository)
     val handleTransferStatusUseCase = HandleTransferStatusUseCase(userRepository, textRepository)
+    val handleFoodUseCase = HandleFoodUseCase(userRepository, textRepository)
     val menuUseCase = MenuUseCase(userRepository, textRepository)
     val calendarUseCase = CalendarUseCase(userRepository, textRepository)
     val locationUseCase = LocationUseCase(userRepository, textRepository)
@@ -63,6 +66,7 @@ class Application: NotificationListener {
     val eventStatusDispatcher: EventStatusDispatcher
     val villaStatusDispatcher: VillaStatusDispatcher
     val transferStatusDispatcher: TransferStatusDispatcher
+    val foodDispatcher: FoodDispatcher
     val menuDispatcher: MenuDispatcher
     val statusTableDispatcher: StatusTableDispatcher
     val pingDispatcher: PingDispatcher
@@ -79,13 +83,14 @@ class Application: NotificationListener {
         }
         villaStatusDispatcher = VillaStatusDispatcher(textRepository, handleVillaStatusUseCase)
         transferStatusDispatcher = TransferStatusDispatcher(textRepository, handleTransferStatusUseCase)
+        foodDispatcher = FoodDispatcher(textRepository, handleFoodUseCase)
         statusTableDispatcher = StatusTableDispatcher(statusTableUseCase)
         pingDispatcher = PingDispatcher(textRepository, pingGuestsUseCase)
         menuDispatcher = MenuDispatcher(
             textRepository, menuUseCase, infoUseCase, dressCodeUseCase, calendarUseCase, locationUseCase,
             object : MenuEventInterface {
                 override fun needToHandle(bot: Bot, chatId: Long): Boolean {
-                    return !pingDispatcher.isUserInPingMode(chatId)
+                    return !pingDispatcher.isUserInPingMode(chatId) && !foodDispatcher.isUserInEnteringMode(chatId)
                 }
 
                 override fun pingEventStatusFirst(bot: Bot, chatId: Long) {
@@ -107,6 +112,10 @@ class Application: NotificationListener {
                 override fun pingTransferStatus(bot: Bot, chatId: Long) {
                     transferStatusDispatcher.pingTransferStatus(bot, chatId)
                 }
+
+                override fun startFoodDrinkSurvey(bot: Bot, chatId: Long) {
+                    foodDispatcher.startFoodDrinkSurvey(bot, chatId)
+                }
             }
         )
         easterDispatcher = EasterDispatcher(easterUseCase)
@@ -121,7 +130,8 @@ class Application: NotificationListener {
             easterDispatcher,
             dummyDispatcher,
             villaStatusDispatcher,
-            transferStatusDispatcher
+            transferStatusDispatcher,
+            foodDispatcher
         )
     }
 

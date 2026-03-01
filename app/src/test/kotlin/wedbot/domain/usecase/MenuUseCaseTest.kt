@@ -1,5 +1,6 @@
 package wedbot.domain.usecase
 
+import wedbot.domain.entity.FoodInfo
 import wedbot.domain.entity.Role
 import wedbot.domain.entity.Status
 import wedbot.domain.entity.UserInfo
@@ -14,6 +15,7 @@ class MenuUseCaseTest {
     private val guestApproved = UserInfo(id = 2, chatId = 2L, role = Role.GUEST, eventStatus = Status.APPROVED)
     private val guestApprovedVillaYes = UserInfo(id = 2, chatId = 2L, role = Role.GUEST, eventStatus = Status.APPROVED, villaStatus = Status.APPROVED)
     private val guestApprovedVillaNo = UserInfo(id = 2, chatId = 2L, role = Role.GUEST, eventStatus = Status.APPROVED, villaStatus = Status.SLEEVE)
+    private val guestApprovedWithFood = UserInfo(id = 13, chatId = 18L, role = Role.GUEST, eventStatus = Status.APPROVED, foodInfo = FoodInfo())
     private val guestSleeve = UserInfo(id = 3, chatId = 3L, role = Role.GUEST, eventStatus = Status.SLEEVE)
     private val adminUser = UserInfo(id = 4, chatId = 4L, role = Role.ADMIN, eventStatus = Status.APPROVED)
 
@@ -46,6 +48,7 @@ class MenuUseCaseTest {
                 listOf("menuButtonInfo", "menuButtonDressCode"),
                 listOf("menuButtonIcs", "menuButtonLocation"),
                 listOf("menuButtonVillaStatus ⚠️", "menuButtonTransfer ⚠️"),
+                listOf("menuButtonFood ⚠️"),
                 listOf("menuButtonHelp")
             )
         )
@@ -64,6 +67,26 @@ class MenuUseCaseTest {
                 listOf("menuButtonInfo", "menuButtonDressCode"),
                 listOf("menuButtonIcs", "menuButtonLocation"),
                 listOf("menuButtonVillaStatus ✅", "menuButtonTransfer ⚠️"),
+                listOf("menuButtonFood ⚠️"),
+                listOf("menuButtonHelp")
+            )
+        )
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `invoke для гостя APPROVED с непустым foodInfo - должен установить эмодзи статус на кнопку опроса`() {
+        val userRepository = FakeUserRepository(listOf(guestApprovedWithFood))
+        val textRepository = FakeTextRepository()
+        val useCase = MenuUseCase(userRepository, textRepository)
+        val result = useCase.invoke(guestApprovedWithFood.chatId!!)
+        val expected = MenuUseCase.Result.Markup(
+            "menuMessage",
+            listOf(
+                listOf("menuButtonInfo", "menuButtonDressCode"),
+                listOf("menuButtonIcs", "menuButtonLocation"),
+                listOf("menuButtonVillaStatus ⚠️", "menuButtonTransfer ⚠️"),
+                listOf("menuButtonFood ✅"),
                 listOf("menuButtonHelp")
             )
         )
@@ -82,6 +105,7 @@ class MenuUseCaseTest {
                 listOf("menuButtonInfo", "menuButtonDressCode"),
                 listOf("menuButtonIcs", "menuButtonLocation"),
                 listOf("menuButtonVillaStatus 🚫", "menuButtonTransfer ⚠️"),
+                listOf("menuButtonFood ⚠️"),
                 listOf("menuButtonHelp")
             )
         )
@@ -116,6 +140,7 @@ class MenuUseCaseTest {
                 listOf("menuButtonInfo", "menuButtonDressCode"),
                 listOf("menuButtonIcs", "menuButtonLocation"),
                 listOf("menuButtonVillaStatus ⚠️", "menuButtonTransfer ⚠️"),
+                listOf("menuButtonFood ⚠️"),
                 listOf("menuButtonStatusTable"),
                 listOf("menuButtonPingGuests")
             )

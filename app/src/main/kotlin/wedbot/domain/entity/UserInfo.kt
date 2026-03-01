@@ -38,7 +38,8 @@ fun UserInfo.toUserStatus(): UserStatus? {
         this.name,
         this.eventStatus,
         this.villaStatus,
-        this.transferStatus
+        this.transferStatus,
+        this.foodInfo != null
     )
 }
 
@@ -48,5 +49,6 @@ data class UserStatus(
     val name: String?,
     val eventStatus: Status,
     val villaStatus: Status,
-    val transferStatus: TransferStatus
+    val transferStatus: TransferStatus,
+    val foodDrinkChosen: Boolean
 )

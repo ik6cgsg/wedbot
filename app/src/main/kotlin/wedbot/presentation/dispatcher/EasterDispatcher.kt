@@ -25,6 +25,13 @@ class EasterDispatcher(
                     is EasterUseCase.Result.Document -> bot.sendPhoto(chatId, TelegramFile.ByFile(res.file))
                     is EasterUseCase.Result.Dice -> bot.sendDice(chatId, DiceEmoji.SlotMachine)
                     is EasterUseCase.Result.Text -> bot.sendSafeMessage(message.chat.id, res.msg)
+                    is EasterUseCase.Result.RandomSticker -> {
+                        val (response, _) = bot.getStickerSet(res.setName)
+                        val stickers = response?.body()?.result?.stickers
+                        if (stickers != null) {
+                            bot.sendSticker(chatId, stickers.random().fileId, replyMarkup = null)
+                        }
+                    }
                     else -> {}
                 }
                 logger.info("<<< END easterDispatcher found for ${message.chat.id}")

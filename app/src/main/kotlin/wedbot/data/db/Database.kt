@@ -82,7 +82,7 @@ class DatabaseSqlite {
     fun getUserStatuses(offset: Long?, limit: Int?): List<UserStatus> = transaction {
         UsersTable
             .select(UsersTable.chatId, UsersTable.username, UsersTable.name,
-                UsersTable.eventStatus, UsersTable.villaStatus, UsersTable.transferStatus
+                UsersTable.eventStatus, UsersTable.villaStatus, UsersTable.transferStatus, UsersTable.foodInfoId
             )
             .where { UsersTable.chatId neq null }
             .offset(offset ?: 0)
@@ -223,6 +223,7 @@ class DatabaseSqlite {
         this[UsersTable.name],
         this[UsersTable.eventStatus],
         this[UsersTable.villaStatus],
-        this[UsersTable.transferStatus]
+        this[UsersTable.transferStatus],
+        this[UsersTable.foodInfoId] != null
     )
 }

@@ -51,15 +51,16 @@ class StatusTableUseCase(
     }
 
     private fun buildMarkdownTable(statuses: List<UserStatus>): String {
-        val header = "|username       |name           |event|villa|trans|\n"
-        val separator = "|${"-".repeat(15)}|${"-".repeat(15)}|-----|-----|-----|\n"
+        val header = "|username       |name           |event|villa|trans|food|\n"
+        val separator = "|${"-".repeat(15)}|${"-".repeat(15)}|-----|-----|-----|----|\n"
         val rows = statuses.joinToString("\n") { status ->
             val username = (status.username ?: "N/A").take(15).padEnd(15)
             val name = (status.name ?: "N/A").take(15).padEnd(15)
             val event = status.eventStatus.toSymbol().padEnd(5)
             val villa = status.villaStatus.toSymbol().padEnd(5)
             val trans = status.transferStatus.toSymbol().padEnd(5)
-            "|$username|$name|$event|$villa|$trans|"
+            val foodChosen = if (status.foodDrinkChosen) "+" else "-"
+            "|$username|$name|$event|$villa|$trans|$foodChosen"
         }
         return "```\n$header$separator$rows\n```"
     }

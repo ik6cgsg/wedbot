@@ -23,6 +23,7 @@ interface MenuEventInterface {
     fun startPingGuestsFlow(bot: Bot, chatId: Long)
     fun pingVillaStatus(bot: Bot, chatId: Long)
     fun pingTransferStatus(bot: Bot, chatId: Long)
+    fun startFoodDrinkSurvey(bot: Bot, chatId: Long)
 }
 
 class MenuDispatcher(
@@ -67,6 +68,7 @@ class MenuDispatcher(
                         MenuUseCase.Button.PING_GUESTS -> menuEventHandler.startPingGuestsFlow(bot, chatId)
                         MenuUseCase.Button.VILLA -> menuEventHandler.pingVillaStatus(bot, chatId)
                         MenuUseCase.Button.TRANSFER -> menuEventHandler.pingTransferStatus(bot, chatId)
+                        MenuUseCase.Button.FOOD -> menuEventHandler.startFoodDrinkSurvey(bot, chatId)
                     }
                     logger.info("<<< END menuDispatcher(${label})")
                 }

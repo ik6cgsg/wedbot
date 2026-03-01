@@ -41,7 +41,8 @@ class MenuUseCase(
         PING_GUESTS,
         DRESS_CODE,
         VILLA,
-        TRANSFER
+        TRANSFER,
+        FOOD
     }
 
     val buttonToLabel = mapOf(
@@ -54,7 +55,8 @@ class MenuUseCase(
         Button.PING_GUESTS to textRepository.menuButtonPingGuests(),
         Button.DRESS_CODE to textRepository.menuButtonDressCode(),
         Button.VILLA to textRepository.menuButtonVillaStatus(),
-        Button.TRANSFER to textRepository.menuButtonTransfer()
+        Button.TRANSFER to textRepository.menuButtonTransfer(),
+        Button.FOOD to textRepository.menuButtonFood()
     )
 
     private val Button.label: String
@@ -69,11 +71,9 @@ class MenuUseCase(
         val infoRow = mutableListOf<String>()
         if (user.canViewInfo()) {
             infoRow.add(Button.INFO.label)
-            //keyboard.add(listOf(Button.INFO.label))
         }
         if (user.canViewDressCode()) {
             infoRow.add(Button.DRESS_CODE.label)
-            //keyboard.add(listOf(Button.DRESS_CODE.label))
         }
         if (infoRow.isNotEmpty()) {
             keyboard.add(infoRow)
@@ -94,16 +94,11 @@ class MenuUseCase(
             keyboard.add(listOf(Button.EVENT_STATUS.label))
         }
         if (user.canViewSurveys()) {
-            // TODO: add food
-            // TODO: add drink
-            val surveyRow = mutableListOf<String>()
             val villaLabel = Button.VILLA.label + " " + user.villaStatus.toEmoji()
-            surveyRow.add(villaLabel)
             val transferLabel = Button.TRANSFER.label + " " + user.transferStatus.toEmoji()
-            surveyRow.add(transferLabel)
-            if (surveyRow.isNotEmpty()) {
-                keyboard.add(surveyRow)
-            }
+            keyboard.add(listOf(villaLabel, transferLabel))
+            val foodLabel = Button.FOOD.label + " " + (if (user.foodInfo != null) "✅" else "⚠️")
+            keyboard.add(listOf(foodLabel))
         }
         // ADMIN
         if (user.canViewAdminPanel()) {

@@ -1,7 +1,7 @@
 package wedbot.domain.entity
 
 enum class Menu {
-    TAVUK, HROOHROO, VEGI
+    HROOHROO, REEBOK, VEGI
 }
 
 enum class Drink {
@@ -11,6 +11,6 @@ enum class Drink {
 data class FoodInfo(
     val id: Int = 0,
     val additional: String = "",
-    val menuChoice: Menu = Menu.TAVUK,
+    val menuChoice: Menu = Menu.HROOHROO,
     val drinks: Set<Drink> = setOf()
 )

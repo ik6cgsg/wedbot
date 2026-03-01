@@ -78,11 +78,12 @@ class NotificationService(
                 listener.stillThinkingAboutEvent(user.chatId, user.name)
             }
         }
-        if (BotConstants.villaStatusDeadline.isDatePassedAlready()) {
-            logger.info("villaStatusDeadline has passed, ingoring...")
+        if (BotConstants.surveysDeadline.isDatePassedAlready()) {
+            logger.info("surveysDeadline has passed, ingoring...")
         } else {
             val surveysThinkingUsers = userStatuses.filter {
-                it.eventStatus == Status.APPROVED && (it.villaStatus == Status.THINKING || it.transferStatus == TransferStatus.THINKING)
+                it.eventStatus == Status.APPROVED &&
+                (it.villaStatus == Status.THINKING || it.transferStatus == TransferStatus.THINKING || !it.foodDrinkChosen)
             }
             surveysThinkingUsers.forEach { user ->
                 listener.hasIdleSurveys(user.chatId)

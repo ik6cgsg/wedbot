@@ -8,7 +8,7 @@ import wedbot.domain.entity.Menu
 object FoodInfoTable: Table("food_infos") {
     val id = integer("id").autoIncrement()
     val additional = text("additional")
-    val menu = enumerationByName("menu", 30, Menu::class).default(Menu.TAVUK)
+    val menu = enumerationByName("menu", 30, Menu::class).default(Menu.HROOHROO)
     override val primaryKey = PrimaryKey(id)
 }
 

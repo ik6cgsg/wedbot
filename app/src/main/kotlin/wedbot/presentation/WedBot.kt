@@ -13,6 +13,7 @@ import wedbot.presentation.dispatcher.AuthDispatcher
 import wedbot.presentation.dispatcher.DummyDispatcher
 import wedbot.presentation.dispatcher.EasterDispatcher
 import wedbot.presentation.dispatcher.EventStatusDispatcher
+import wedbot.presentation.dispatcher.FoodDispatcher
 import wedbot.presentation.dispatcher.MenuDispatcher
 import wedbot.presentation.dispatcher.PingDispatcher
 import wedbot.presentation.dispatcher.StatusTableDispatcher
@@ -33,7 +34,8 @@ class WedBot(
     private val easterDispatcher: EasterDispatcher,
     private val dummyDispatcher: DummyDispatcher,
     private val villaStatusDispatcher: VillaStatusDispatcher,
-    private val transferStatusDispatcher: TransferStatusDispatcher
+    private val transferStatusDispatcher: TransferStatusDispatcher,
+    private val foodDispatcher: FoodDispatcher
 ) {
     private val bot: Bot
     private val logger = Logger.getLogger(this::class.java.name)
@@ -71,6 +73,7 @@ class WedBot(
             eventStatusDispatcher.setup(this)
             villaStatusDispatcher.setup(this)
             transferStatusDispatcher.setup(this)
+            foodDispatcher.setup(this)
             menuDispatcher.setup(this)
             statusTableDispatcher.setup(this)
             easterDispatcher.setup(this)

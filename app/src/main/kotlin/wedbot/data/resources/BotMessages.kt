@@ -69,6 +69,7 @@ object BotMessages {
     const val MENU_BUTTON_DRESS_CODE ="ДрессКот"
     const val MENU_BUTTON_VILLA_STATUS = "Коттедж"
     const val MENU_BUTTON_TRANSFER = "Трансфер"
+    const val MENU_BUTTON_FOOD = "Еда и напитки"
     const val MENU_HAS_SURVEYS = """
         Дорогой гость! Кажется, у тебя есть непройденные опросы...
         Пожалуйста, проверь в /menu кнопки, помеченные знаком ⚠️
@@ -110,7 +111,7 @@ object BotMessages {
         Кажется, ты отказался от ночёвки или в коттедже не хватило места :(
         Если захочешь, ты сможешь потусить с нами до 02:00 ночи (далее ворота на территорию закрываются до утра).
         
-        Если вдруг есть вопросы, обратись к админам!`
+        Если вдруг есть вопросы, обратись к админам!
     """
     const val VILLA_STATUS_PING_THINKING = """
         Если ты читаешь это сообщение, значит ты попал в список людей, которых мы мечтаем увидеть в коттедже после банкета!
@@ -143,4 +144,30 @@ object BotMessages {
     const val TRANSFER_STATUS_NEED_CHOICE = "Спасибо за ответ! Отметим, что необходим трансфер"
     const val TRANSFER_STATUS_SELF_HANDLE_CHOICE = "Спасибо за ответ! Отметим, что доберешься самостоятельно"
     const val TRANSFER_STATUS_SOCIAL_LEGEND_CHOICE = "Спасибо за ответ! И большой респект за помощь!"
+    // Food & Drink survey
+    const val FOOD_SURVEY_MENU_PROMPT = "Пожалуйста, выбери основное горячее блюдо:"
+    const val FOOD_SURVEY_DRINK_PROMPT = "Пожалуйста, выбери напитки (можно *несколько*):"
+    const val FOOD_SURVEY_DRINK_PROMPT_AT_LEAST_SINGLE = "Хитро... Но нужно всё-таки что-то выбрать"
+    const val FOOD_SURVEY_ADDITIONAL_PROMPT = "Если у тебя есть аллергия или особые пожелания, напиши их ответным сообщением (или нажми «Пропустить»)"
+    const val FOOD_SURVEY_MENU_HROOHROO = "Корейка свиная 🐷"
+    const val FOOD_SURVEY_MENU_REEBOK = "Судак 🐟"
+    const val FOOD_SURVEY_MENU_VEGI = "Вегетарианское 🥗"
+    const val FOOD_SURVEY_DRINK_WHITE = "Белое вино 🥂"
+    const val FOOD_SURVEY_DRINK_RED = "Красное вино 🍷"
+    const val FOOD_SURVEY_DRINK_SHAMPOO = "Шампанское 🍾"
+    const val FOOD_SURVEY_DRINK_WHISKEY = "Виски 🥃"
+    const val FOOD_SURVEY_DRINK_VODKA = "Водка 🍸"
+    const val FOOD_SURVEY_DRINK_ALCOHOLESS = "Безалкогольное 🥤"
+    const val FOOD_SURVEY_DRINK_DONE_BUTTON = "ГОТОВО ➡️"
+    const val FOOD_SURVEY_SKIP_ADDITIONAL = "ПРОПУСТИТЬ ➡️"
+    const val FOOD_SURVEY_FINISHED = "Спасибо! Мы сохранили твои предпочтения."
+    const val FOOD_SURVEY_SUMMARY = """
+        Напоминаем, что ты выбрал в опросе ранее:
+        
+        🍴 *Горячее*: %s
+        🥂 *Напитки*: %s
+        📝 *Дополнительно*: %s
+        
+        Если вдруг что-то поменялось, обратись пожалуйста к админам!
+    """
 }
