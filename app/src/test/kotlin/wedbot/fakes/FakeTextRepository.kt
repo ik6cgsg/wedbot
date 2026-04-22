@@ -10,6 +10,7 @@ class FakeTextRepository : TextRepository {
     override fun helpMessage(): String = "helpMessage"
     override fun shareContactError(): String = "shareContactError"
     override fun shareContactLabel(): String = "shareContactLabel"
+    override fun shareOwnContactOnlyError(): String = "shareOwnContactOnlyError"
     override fun userNotFound(): String = "userNotFound"
     override fun weakRights(): String = "weakRights"
     override fun alreadyRegistered(): String = "alreadyRegistered"

@@ -7,7 +7,6 @@ import io.ktor.server.response.*
 import io.ktor.server.request.*
 import io.ktor.server.routing.*
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.plugins.calllogging.*
 import wedbot.SystemProperties
 
 class Server(
@@ -35,9 +34,8 @@ class Server(
     }
 
     private fun Application.module() {
-        install(CallLogging)
         routing {
-            post("/${SystemProperties.botToken}") {
+            post("/${SystemProperties.webhookPath}") {
                 val response = call.receiveText()
                 process(response)
                 call.respond(HttpStatusCode.OK)

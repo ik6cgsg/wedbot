@@ -1,0 +1,9 @@
+bot.token=123456:replace_me
+bot.host=example.com
+bot.port=8443
+bot.webhook=false
+bot.webhook.path=telegram-webhook
+keystore.pswd=replace_me
+db.init=false
+mode.debug=false
+mode.dummy=false

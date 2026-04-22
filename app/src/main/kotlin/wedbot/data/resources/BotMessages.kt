@@ -31,6 +31,7 @@ object BotMessages {
     """
     const val ASK_PHONE = "Пожалуйста, отправь свой номер телефона, чтобы я мог найти тебя в списке гостей."
     const val ASK_PHONE_LABEL = "Отправить телефон"
+    const val ASK_PHONE_OWN_CONTACT_ONLY = "Пожалуйста, используй кнопку ниже и отправь именно свой контакт из Telegram."
     const val USER_NOT_FOUND = "К сожалению, я не нашел тебя в списке гостей. Попробуй связаться с организаторами."
     const val WEAK_RIGHTS = "Кажется, у меня не хватает прав на такое..."
     const val USER_ALREADY_REGISTERED = "Этот номер телефона уже используется другим пользователем."

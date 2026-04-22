@@ -21,6 +21,7 @@ class StaticTextRepository : TextRepository {
         .trimIndent()
     override fun shareContactError(): String = BotMessages.ASK_PHONE
     override fun shareContactLabel(): String = BotMessages.ASK_PHONE_LABEL
+    override fun shareOwnContactOnlyError(): String = BotMessages.ASK_PHONE_OWN_CONTACT_ONLY
     override fun userNotFound(): String = BotMessages.USER_NOT_FOUND
     override fun weakRights(): String = BotMessages.WEAK_RIGHTS
     override fun alreadyRegistered(): String = BotMessages.USER_ALREADY_REGISTERED

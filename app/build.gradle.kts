@@ -44,6 +44,7 @@ tasks.withType<JavaExec> {
     systemProperty("bot.host", localProperties.getProperty("bot.host"))
     systemProperty("bot.port", localProperties.getProperty("bot.port"))
     systemProperty("bot.webhook", localProperties.getProperty("bot.webhook"))
+    systemProperty("bot.webhook.path", localProperties.getProperty("bot.webhook.path"))
     systemProperty("keystore.pswd", localProperties.getProperty("keystore.pswd"))
     systemProperty("db.init", localProperties.getProperty("db.init"))
     systemProperty("mode.debug", localProperties.getProperty("mode.debug"))

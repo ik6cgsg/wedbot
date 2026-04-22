@@ -4,8 +4,6 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.StdOutSqlLogger
-import org.jetbrains.exposed.sql.addLogger
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.deleteWhere
@@ -42,16 +40,6 @@ class DatabaseSqlite {
                 FoodInfoTable.deleteAll()
                 FoodInfoDrinksTable.deleteAll()
             }
-            create(UserInfo(phone = "79119889011", username = "cgsgilich"))
-            create(UserInfo(username = "dergoleem"))
-            create(UserInfo(
-                username = "fakecgsgilich",
-                foodInfo = FoodInfo(
-                    additional = "big cock",
-                    menuChoice = Menu.HROOHROO,
-                    drinks = setOf(Drink.WHISKEY, Drink.RED, Drink.WHISKEY)
-                )
-            ))
         }
     }
 

@@ -11,6 +11,7 @@ import kotlin.test.assertEquals
 class VerifyPhoneUseCaseTest {
     private val userByPhone = UserInfo(id = 1, chatId = null, phone = "79991234567", role = Role.GUEST)
     private val userWithSamePhoneAndChatId = UserInfo(id = 2, chatId = 123L, phone = "79997654321", role = Role.GUEST)
+    private val validSender = VerifyPhoneUseCase.MessageFrom(username = "newuser", userId = 822L)
 
     @Test
     fun `invoke - должен найти пользователя по телефону и обновить chatId & username`() {
@@ -18,12 +19,15 @@ class VerifyPhoneUseCaseTest {
         val textRepository = FakeTextRepository()
         val useCase = VerifyPhoneUseCase(userRepository, textRepository)
         val newChatId = 456L
-        val newUserName = "newuser"
         val expected = VerifyPhoneUseCase.Result.UserFound(
             "generateGreeting",
-            userByPhone.copy(chatId = newChatId, username = newUserName).toUserStatus()!!
+            userByPhone.copy(chatId = newChatId, username = validSender.username).toUserStatus()!!
         )
-        val result = useCase.invoke(newChatId, userByPhone.phone!!, newUserName)
+        val result = useCase.invoke(
+            chatId = newChatId,
+            contact = VerifyPhoneUseCase.Contact(phone = userByPhone.phone!!, userId = validSender.userId),
+            messageFrom = validSender
+        )
         assertEquals(expected, result)
     }
 
@@ -33,7 +37,11 @@ class VerifyPhoneUseCaseTest {
         val textRepository = FakeTextRepository()
         val useCase = VerifyPhoneUseCase(userRepository, textRepository)
         val expected = VerifyPhoneUseCase.Result.Error("userNotFound")
-        val result = useCase.invoke(123L, "79990000000", null)
+        val result = useCase.invoke(
+            chatId = 123L,
+            contact = VerifyPhoneUseCase.Contact(phone = "79990000000", userId = validSender.userId),
+            messageFrom = validSender
+        )
         assertEquals(expected, result)
     }
 
@@ -44,7 +52,28 @@ class VerifyPhoneUseCaseTest {
         val useCase = VerifyPhoneUseCase(userRepository, textRepository)
         val newChatIdTryingToStealPhone = 999L
         val expected = VerifyPhoneUseCase.Result.Error("alreadyRegistered")
-        val result = useCase.invoke(newChatIdTryingToStealPhone, userWithSamePhoneAndChatId.phone!!, "other")
+        val result = useCase.invoke(
+            chatId = newChatIdTryingToStealPhone,
+            contact = VerifyPhoneUseCase.Contact(
+                phone = userWithSamePhoneAndChatId.phone!!,
+                userId = validSender.userId
+            ),
+            messageFrom = validSender.copy(username = "other")
+        )
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `invoke - должен вернуть ошибку, если contact userId не совпадает с sender userId`() {
+        val userRepository = FakeUserRepository(listOf(userByPhone))
+        val textRepository = FakeTextRepository()
+        val useCase = VerifyPhoneUseCase(userRepository, textRepository)
+        val expected = VerifyPhoneUseCase.Result.Error("shareOwnContactOnlyError")
+        val result = useCase.invoke(
+            chatId = 123L,
+            contact = VerifyPhoneUseCase.Contact(phone = userByPhone.phone!!, userId = 111L),
+            messageFrom = VerifyPhoneUseCase.MessageFrom(username = "newuser", userId = 222L)
+        )
         assertEquals(expected, result)
     }
 }

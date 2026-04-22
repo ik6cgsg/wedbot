@@ -49,7 +49,9 @@ class AuthDispatcher(
             contact {
                 val chatId = message.chat.id
                 logger.info(">>> START authDispatcher(contact) for $chatId")
-                val res = verifyPhoneUseCase(chatId, contact.phoneNumber, message.from?.username)
+                val contactInfo = VerifyPhoneUseCase.Contact(contact.phoneNumber, contact.userId)
+                val from = VerifyPhoneUseCase.MessageFrom(message.from?.username, message.from?.id)
+                val res = verifyPhoneUseCase(chatId, contactInfo, from)
                 when (res) {
                     is VerifyPhoneUseCase.Result.UserFound -> {
                         bot.userVerifiedAfterStart(chatId, res.greeting, res.status)

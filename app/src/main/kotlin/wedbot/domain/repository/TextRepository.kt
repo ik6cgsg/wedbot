@@ -8,6 +8,7 @@ interface TextRepository {
     fun helpMessage(): String
     fun shareContactError(): String
     fun shareContactLabel(): String
+    fun shareOwnContactOnlyError(): String
     fun userNotFound(): String
     fun weakRights(): String
     fun alreadyRegistered(): String
